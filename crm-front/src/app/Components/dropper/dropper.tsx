@@ -5,12 +5,9 @@ const Dropper = (props: any) => {
   const {isOver, setNodeRef} = useDroppable({
     id: props.id,
   });
-  const style = {
-    opacity: isOver ? 1 : 0.5,
-  };
 
   return (
-    <div ref={setNodeRef} style={style}>
+    <div ref={setNodeRef}  className="w-[300px] h-[300px] bg-gray-300 border-2 border-dashed border-black flex justify-center items-center flex" >
       {props.children}
     </div>
   );
