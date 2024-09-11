@@ -1,14 +1,39 @@
-import React from 'react';
-import {useDroppable} from '@dnd-kit/core';
+import React, { CSSProperties } from 'react';
+import { UniqueIdentifier, useDroppable } from '@dnd-kit/core';
 
-const Dropper = (props: any) => {
-  const {isOver, setNodeRef} = useDroppable({
-    id: props.id,
+interface PropsDropper {
+  id: UniqueIdentifier;
+  children: React.ReactNode;
+  style?: CSSProperties;
+  title?: string;
+  titleClassName?: string;
+  dropperClassName?: string;
+}
+
+const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClassName, dropperClassName }) => {
+  const { isOver, setNodeRef } = useDroppable({
+    id: id,
   });
 
   return (
-    <div ref={setNodeRef}  className="w-[300px] h-[300px] bg-gray-300 border-2 border-dashed border-black flex justify-center items-center flex" >
-      {props.children}
+    <div className="flex flex-col items-center">
+      {title && (
+        <div className={`text-xl font-semibold mb-2 ${titleClassName}`}>
+          {title}
+        </div>
+      )}
+      <div
+        ref={setNodeRef}
+        className={`w-[300px] h-[300px] rounded-xl border-2 
+          ${isOver ? 'bg-blue-200 border-blue-500' : 'bg-gray-300 border-gray-500'}
+          flex justify-center items-center transition-all duration-200 ease-in-out 
+          ${dropperClassName}`}
+        style={{ ...style, position: 'relative' }}
+      >
+        <div className="absolute inset-0 flex justify-center items-center">
+          {children}
+        </div>
+      </div>
     </div>
   );
 };

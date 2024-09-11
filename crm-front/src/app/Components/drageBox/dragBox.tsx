@@ -10,10 +10,6 @@ const DragBox = (props: any) => {
     transform: CSS.Translate.toString(transform),
   };
 
-  console.log("setNodeRef", setNodeRef);
-  console.log("style", style);
-  console.log("attributes", attributes);
-  console.log("listeners", listeners);
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes}>
       {props.children}

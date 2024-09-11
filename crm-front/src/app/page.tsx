@@ -3,44 +3,72 @@
 import React, { useState } from 'react';
 import DragBox from './Components/drageBox/dragBox';
 import Dropper from './Components/dropper/dropper';
-import { DndContext } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, UniqueIdentifier } from '@dnd-kit/core';
 import BoxKanban from './Components/Box/boxKanban';
-import ContainerKanban from './Components/ContainerKanban/conteinerKenban';
+import { styleBoxDropper } from './Utils/templates';
+
+
+type KanbanItem = {
+  id: string;
+  title: string;
+  type: string;
+};
+
+type KanbanItems = {
+  [key: UniqueIdentifier]: KanbanItem[];
+};
 
 export default function Home() {
-  const [parent, setParent] = useState<string | null>(null);
+  const [items, setItems] = useState<KanbanItems>({
+    droppable: [
+      { id: 'draggable1', title: 'Box 1', type: 'Kanban 1' },
+      { id: 'draggable2', title: 'Box 2', type: 'Kanban 2' },
+    ],
+    droppable2: [
+      { id: 'draggable3', title: 'Box 3', type: 'Kanban 3' },
+    ],
+  });
 
-  // Definição do componente que será arrastável
-  const draggable = (
-    <DragBox id="draggable">
-      <BoxKanban title="Box" type="Kanban" />
-    </DragBox>
-  );
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
 
-  // Função chamada ao final do evento de arrastar
-  const handleDragEnd = (event: any) => {
-    const { over } = event;
-
-    // Verifica se o item foi arrastado sobre algo
     if (over) {
-      setParent(over.id);  // Define o novo 'parent'
-    } else {
-      setParent(null); // Reseta o 'parent' se o item não for droppado em um alvo válido
+      const activeContainer = Object.keys(items).find(key => 
+        items[key].some(item => item.id === active.id)
+      );
+      const overContainer = over.id;
+
+      if (activeContainer && activeContainer !== overContainer) {
+        setItems(prev => {
+          const activeItems = prev[activeContainer].filter(item => item.id !== active.id);
+          const overItems = [...prev[overContainer], prev[activeContainer].find(item => item.id === active.id)!];
+          
+          return {
+            ...prev,
+            [activeContainer]: activeItems,
+            [overContainer]: overItems,
+          };
+        });
+      }
     }
   };
 
   return (
-    <div className="bg-red-500 h-screen w-screen overflow-hidden">
+    <div className="bg-red-500 h-screen w-screen overflow-hidden flex justify-around items-center">
       <DndContext onDragEnd={handleDragEnd}>
-        {/* Renderiza o componente arrastável se ele ainda não foi droppado */}
-        {!parent ? draggable : null}
-
-        {/* Drop zone com o id 'droppable' */}
-        <Dropper id="droppable">
-          {parent === "droppable" ? draggable : 'DropHere'}
+        <Dropper id="droppable" style={styleBoxDropper} title='Em Andamento'>
+          {items.droppable.map(item => (
+            <DragBox key={item.id} id={item.id}>
+              <BoxKanban title={item.title} type={item.type} />
+            </DragBox>
+          ))}
         </Dropper>
-        <Dropper id="droppable2">
-          {parent === "droppable2" ? draggable : 'DropHere'}
+        <Dropper id="droppable2" style={styleBoxDropper} title='Concluído'>
+          {items.droppable2.map(item => (
+            <DragBox key={item.id} id={item.id}>
+              <BoxKanban title={item.title} type={item.type} />
+            </DragBox>
+          ))}
         </Dropper>
       </DndContext>
     </div>
