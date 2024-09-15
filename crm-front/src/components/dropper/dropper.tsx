@@ -30,7 +30,7 @@ const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClas
           ${dropperClassName}`}
         style={{ ...style, position: 'relative' }}
       >
-        <div className="absolute inset-0 flex justify-center items-center">
+        <div className="absolute inset-0 flex-col p-6">
           {children}
         </div>
       </div>
