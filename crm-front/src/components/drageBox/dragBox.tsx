@@ -3,7 +3,7 @@ import {useDraggable} from '@dnd-kit/core';
 import {CSS} from '@dnd-kit/utilities';
 
 interface PropsDragBox {
-  id: string;
+  id: number;
   children: React.ReactNode;
 }
 

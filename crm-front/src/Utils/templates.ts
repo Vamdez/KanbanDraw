@@ -1,4 +1,3 @@
-import { mock } from "node:test";
 
 export const styleBoxDropper = {
   backgroundColor: 'blue',
