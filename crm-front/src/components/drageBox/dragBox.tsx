@@ -15,6 +15,7 @@ const DragBox : React.FC<PropsDragBox> = ({ id, children }) => {
   const style = {
     transform: CSS.Transform.toString(transform),
     zIndex: isDragging ? 1000 : 'auto',
+    opacity: isDragging ? 0.5 : 1,
     position: 'relative' as 'relative',
   };
 

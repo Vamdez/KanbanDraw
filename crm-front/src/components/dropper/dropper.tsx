@@ -10,24 +10,25 @@ interface PropsDropper {
   title?: string;
   titleClassName?: string;
   dropperClassName?: string;
+  isDragging?: boolean;
 }
 
-const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClassName, dropperClassName }) => {
+const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClassName, dropperClassName, isDragging }) => {
   const {
     attributes,
     listeners,
     setNodeRef,
     transform,
     transition,
-    isDragging,
     over,
   } = useSortable({ id: id });
 
   const dropperStyles: CSSProperties = {
     ...style,
-    transition,
-    transform: CSS.Translate.toString(transform),
-    opacity: isDragging ? 0.5 : undefined,
+    transform: CSS.Transform.toString(transform),
+    zIndex: isDragging ? 1000 : 'auto',
+    opacity: isDragging ? 0.5 : 1,
+    position: 'relative' as 'relative',
   };
 
   return (

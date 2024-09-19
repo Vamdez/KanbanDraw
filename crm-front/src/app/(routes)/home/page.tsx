@@ -1,14 +1,14 @@
 'use client';
 
 import React, { useState } from 'react';
+import { DndContext, DragEndEvent, DragOverlay, DragStartEvent, useSensor, PointerSensor, useSensors, UniqueIdentifier } from '@dnd-kit/core';
+import { SortableContext, arrayMove, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import DragBox from '@components/drageBox/dragBox';
 import Dropper from '@components/dropper/dropper';
-import { DndContext, DragEndEvent, UniqueIdentifier, useSensor, PointerSensor, useSensors } from '@dnd-kit/core';
 import BoxKanban from '@components/Box/boxKanban';
-import { styleBoxDropper } from '@utils/templates';
 import ModalBox from '@components/ModalBox/modalBox';
+import { styleBoxDropper } from '@utils/templates';
 import { KanbanItems, CardBox } from '@/@types/cardBox';
-import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 
 export default function Home() {
   const [items, setItems] = useState<KanbanItems[]>([
@@ -29,6 +29,10 @@ export default function Home() {
     }
   ]);
 
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const [activeType, setActiveType] = useState<'container' | 'card' | null>(null);
+  const [selectedItem, setSelectedItem] = useState<CardBox | null>(null);
+
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -36,8 +40,6 @@ export default function Home() {
       },
     })
   );
-
-  const [selectedItem, setSelectedItem] = useState<CardBox | null>(null);
 
   const handleCardClick = (item: CardBox) => {
     setSelectedItem(item);
@@ -47,8 +49,13 @@ export default function Home() {
     setSelectedItem(null);
   };
 
+  const handleDragStart = (event: DragStartEvent) => {
+    const { active } = event;
+    setActiveId(active.id);
+    setActiveType(items.some(item => item.id === active.id) ? 'container' : 'card');
+  };
+
   const handleDragEnd = (event: DragEndEvent) => {
-    console.log(event, "event");
     const { active, over } = event;
 
     if (over && active.id !== over.id) {
@@ -69,23 +76,19 @@ export default function Home() {
 
         if (activeCardContainerIndex !== overCardContainerIndex) {
           const activeContainer = prev[activeCardContainerIndex];
+          const overContainer = prev[overCardContainerIndex];
           const activeCardIndex = activeContainer.cards.findIndex((card) => card.id === active.id);
-          const movedCard = activeContainer.cards[activeCardIndex];
+          const overCardIndex = overContainer.cards.findIndex((card) => card.id === over.id);
 
-          return prev.map((container, index) => {
-            if (index === activeCardContainerIndex) {
-              return {
-                ...container,
-                cards: container.cards.filter((card) => card.id !== active.id),
-              };
-            } else if (index === overCardContainerIndex) {
-              return {
-                ...container,
-                cards: [...container.cards, { ...movedCard, status: container.title }],
-              };
-            }
-            return container;
-          });
+          const newItems = [...prev];
+          const [movedCard] = newItems[activeCardContainerIndex].cards.splice(activeCardIndex, 1);
+          newItems[overCardContainerIndex].cards.splice(
+            overCardIndex >= 0 ? overCardIndex : newItems[overCardContainerIndex].cards.length,
+            0,
+            { ...movedCard, status: newItems[overCardContainerIndex].title }
+          );
+
+          return newItems;
         } else {
           const containerIndex = activeCardContainerIndex;
           const oldIndex = prev[containerIndex].cards.findIndex((card) => card.id === active.id);
@@ -103,15 +106,61 @@ export default function Home() {
         }
       });
     }
+
+    setActiveId(null);
+    setActiveType(null);
+  };
+
+  const findItemById = (id: UniqueIdentifier): CardBox | KanbanItems | null => {
+    const container = items.find(item => item.id === id);
+    if (container) return container;
+
+    for (const container of items) {
+      const card = container.cards.find(c => c.id === id);
+      if (card) return card;
+    }
+    return null;
+  };
+
+  const renderDragOverlay = () => {
+    if (!activeId) return null;
+  
+    const item = findItemById(activeId);
+    if (!item) return null;
+  
+    if (activeType === 'container') {
+      const containerItem = item as KanbanItems;
+      return (
+        <Dropper 
+          id={containerItem.id} 
+          style={styleBoxDropper} 
+          title={containerItem.title} 
+          isDragging
+        >
+          {containerItem.cards.map((card) => (
+            <DragBox key={card.id} id={card.id}>
+              <BoxKanban title={card.title} type={card.type} />
+            </DragBox>
+          ))}
+        </Dropper>
+      );
+    } else {
+      const cardItem = item as CardBox;
+      return <BoxKanban title={cardItem.title} type={cardItem.type} />;
+    }
   };
 
   return (
     <div className="bg-red-500 h-screen w-screen overflow-hidden flex justify-around items-center select-none">
-      <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        <SortableContext items={items.map(item => item.id)}>
+      <DndContext 
+        onDragStart={handleDragStart}
+        onDragEnd={handleDragEnd} 
+        sensors={sensors}
+      >
+        <SortableContext items={items.map(item => item.id)} strategy={verticalListSortingStrategy}>
           {items.map((item) => (
             <Dropper key={item.id} id={item.id} style={styleBoxDropper} title={item.title}>
-              <SortableContext items={item.cards.map((card) => card.id)}>
+              <SortableContext items={item.cards.map((card) => card.id)} strategy={verticalListSortingStrategy}>
                 {item.cards.map((card) => (
                   <DragBox key={card.id} id={card.id}>
                     <div onClick={() => handleCardClick(card)}>
@@ -123,6 +172,9 @@ export default function Home() {
             </Dropper>
           ))}
         </SortableContext>
+        <DragOverlay>
+          {renderDragOverlay()}
+        </DragOverlay>
       </DndContext>
 
       {selectedItem && (
