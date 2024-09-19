@@ -3,28 +3,31 @@
 import React, { useState } from 'react';
 import DragBox from '@components/drageBox/dragBox';
 import Dropper from '@components/dropper/dropper';
-import { DndContext, DragEndEvent, UniqueIdentifier, TouchSensor, useSensor, MouseSensor, KeyboardSensor, useSensors, PointerSensor } from '@dnd-kit/core';
+import { DndContext, DragEndEvent, UniqueIdentifier, useSensor, PointerSensor, useSensors } from '@dnd-kit/core';
 import BoxKanban from '@components/Box/boxKanban';
 import { styleBoxDropper } from '@utils/templates';
 import ModalBox from '@components/ModalBox/modalBox';
-import { CardBox } from '@/@types/cardBox';
-
-
-
-type KanbanItems = {
-  [key: UniqueIdentifier]: CardBox[];
-};
+import { KanbanItems, CardBox } from '@/@types/cardBox';
+import { SortableContext, arrayMove } from '@dnd-kit/sortable';
 
 export default function Home() {
-  const [items, setItems] = useState<KanbanItems>({
-    droppable: [
-      { id: 1, title: 'Box 1', type: 'Kanban 1', status: 'Em Andamento' },
-      { id: 2, title: 'Box 2', type: 'Kanban 2', status: 'Em Andamento' },
-    ],
-    droppable2: [
-      { id: 3, title: 'Box 3', type: 'Kanban 3', status: 'Concluído' },
-    ],
-  });
+  const [items, setItems] = useState<KanbanItems[]>([
+    {
+      id: 'droppable',
+      title: 'Em Andamento',
+      cards: [
+        { id: 1, title: 'Box 1', type: 'Kanban 1', status: 'Em Andamento' },
+        { id: 2, title: 'Box 2', type: 'Kanban 2', status: 'Em Andamento' },
+      ]
+    },
+    {
+      id: 'droppable2',
+      title: 'Concluído',
+      cards: [
+        { id: 3, title: 'Box 3', type: 'Kanban 3', status: 'Concluído' },
+      ]
+    }
+  ]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -45,50 +48,74 @@ export default function Home() {
   };
 
   const handleDragEnd = (event: DragEndEvent) => {
+    console.log(event, "event");
     const { active, over } = event;
 
-    if (over) {
-      const activeContainer = Object.keys(items).find(key => 
-        items[key].some(item => item.id === active.id)
-      );
-      const overContainer = over.id;
+    if (over && active.id !== over.id) {
+      setItems((prev) => {
+        const activeContainerIndex = prev.findIndex((container) =>
+          container.cards.some((card) => card.id === active.id)
+        );
+        const overContainerIndex = prev.findIndex((container) =>
+          container.id === over.id || container.cards.some((card) => card.id === over.id)
+        );
 
-      if (activeContainer && activeContainer !== overContainer) {
-        setItems(prev => {
-          const activeItems = prev[activeContainer].filter(item => item.id !== active.id);
-          const overItems = [...prev[overContainer], prev[activeContainer].find(item => item.id === active.id)!];
-          
-          return {
-            ...prev,
-            [activeContainer]: activeItems,
-            [overContainer]: overItems,
-          };
-        });
-      }
+        if (activeContainerIndex !== overContainerIndex) {
+          const activeContainer = prev[activeContainerIndex];
+          const activeCardIndex = activeContainer.cards.findIndex((card) => card.id === active.id);
+          const movedCard = activeContainer.cards[activeCardIndex];
+
+          return prev.map((container, index) => {
+            if (index === activeContainerIndex) {
+              return {
+                ...container,
+                cards: container.cards.filter((card) => card.id !== active.id),
+              };
+            } else if (index === overContainerIndex) {
+              return {
+                ...container,
+                cards: [...container.cards, { ...movedCard, status: container.title }],
+              };
+            }
+            return container;
+          });
+        } else {
+          const containerIndex = activeContainerIndex;
+          const oldIndex = prev[containerIndex].cards.findIndex((card) => card.id === active.id);
+          const newIndex = prev[containerIndex].cards.findIndex((card) => card.id === over.id);
+
+          return prev.map((container, index) => {
+            if (index === containerIndex) {
+              return {
+                ...container,
+                cards: arrayMove(container.cards, oldIndex, newIndex),
+              };
+            }
+            return container;
+          });
+        }
+      });
     }
   };
 
   return (
-    <div className="bg-red-500 h-screen w-screen overflow-hidden flex justify-around items-center">
+    <div className="bg-red-500 h-screen w-screen overflow-hidden flex justify-around items-center select-none">
       <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        <Dropper id="droppable" style={styleBoxDropper} title='Em Andamento'>
-          {items.droppable.map(item => (
-            <DragBox key={item.id} id={item.id}>
-              <div onClick={() => handleCardClick(item)}>
-                <BoxKanban title={item.title} type={item.type} />
-              </div>
-            </DragBox>
-          ))}
-        </Dropper>
-        <Dropper id="droppable2" style={styleBoxDropper} title='Concluído'>
-          {items.droppable2.map(item => (
-            <DragBox key={item.id} id={item.id}>
-              <div onClick={() => handleCardClick(item)}>
-                <BoxKanban title={item.title} type={item.type} />
-              </div>
-            </DragBox>
-          ))}
-        </Dropper>
+        {items.map((item) => (
+          <SortableContext key={item.id} items={["droppable", "droppable2"]}>
+            <Dropper id={item.id} style={styleBoxDropper} title={item.title}>
+              <SortableContext key={item.id} items={item.cards.map((card) => card.id)}>
+                {item.cards.map((card) => (
+                  <DragBox key={card.id} id={card.id}>
+                    <div onClick={() => handleCardClick(card)}>
+                      <BoxKanban title={card.title} type={card.type} />
+                    </div>
+                  </DragBox>
+                ))}
+              </SortableContext>
+            </Dropper>
+          </SortableContext>
+        ))}
       </DndContext>
 
       {selectedItem && (

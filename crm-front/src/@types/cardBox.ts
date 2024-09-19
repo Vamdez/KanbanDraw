@@ -4,3 +4,9 @@ export interface CardBox {
     type: string;
     status: string;
 }
+
+export interface KanbanItems {
+    id : string;
+    title: string;
+    cards: CardBox[];
+}

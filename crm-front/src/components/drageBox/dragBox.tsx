@@ -1,5 +1,5 @@
 import React from 'react';
-import {useDraggable} from '@dnd-kit/core';
+import { useSortable } from '@dnd-kit/sortable';
 import {CSS} from '@dnd-kit/utilities';
 
 interface PropsDragBox {
@@ -8,15 +8,15 @@ interface PropsDragBox {
 }
 
 const DragBox : React.FC<PropsDragBox> = ({ id, children }) => {
-  const {attributes, listeners, setNodeRef, transform, isDragging} = useDraggable({
+  const {attributes, listeners, setNodeRef, transform, isDragging} = useSortable({
     id: id,
   });
 
-  const style = transform ? {
-    transform: CSS.Translate.toString(transform),
+  const style = {
+    transform: CSS.Transform.toString(transform),
     zIndex: isDragging ? 1000 : 'auto',
     position: 'relative' as 'relative',
-  } : undefined;
+  };
 
   return (
     <div ref={setNodeRef} style={style} {...listeners} {...attributes} className="w-full mb-2">
