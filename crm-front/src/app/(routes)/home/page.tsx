@@ -53,25 +53,32 @@ export default function Home() {
 
     if (over && active.id !== over.id) {
       setItems((prev) => {
-        const activeContainerIndex = prev.findIndex((container) =>
+        const activeContainerIndex = prev.findIndex((container) => container.id === active.id);
+        const overContainerIndex = prev.findIndex((container) => container.id === over.id);
+
+        if (activeContainerIndex !== -1 && overContainerIndex !== -1) {
+          return arrayMove(prev, activeContainerIndex, overContainerIndex);
+        }
+
+        const activeCardContainerIndex = prev.findIndex((container) =>
           container.cards.some((card) => card.id === active.id)
         );
-        const overContainerIndex = prev.findIndex((container) =>
+        const overCardContainerIndex = prev.findIndex((container) =>
           container.id === over.id || container.cards.some((card) => card.id === over.id)
         );
 
-        if (activeContainerIndex !== overContainerIndex) {
-          const activeContainer = prev[activeContainerIndex];
+        if (activeCardContainerIndex !== overCardContainerIndex) {
+          const activeContainer = prev[activeCardContainerIndex];
           const activeCardIndex = activeContainer.cards.findIndex((card) => card.id === active.id);
           const movedCard = activeContainer.cards[activeCardIndex];
 
           return prev.map((container, index) => {
-            if (index === activeContainerIndex) {
+            if (index === activeCardContainerIndex) {
               return {
                 ...container,
                 cards: container.cards.filter((card) => card.id !== active.id),
               };
-            } else if (index === overContainerIndex) {
+            } else if (index === overCardContainerIndex) {
               return {
                 ...container,
                 cards: [...container.cards, { ...movedCard, status: container.title }],
@@ -80,7 +87,7 @@ export default function Home() {
             return container;
           });
         } else {
-          const containerIndex = activeContainerIndex;
+          const containerIndex = activeCardContainerIndex;
           const oldIndex = prev[containerIndex].cards.findIndex((card) => card.id === active.id);
           const newIndex = prev[containerIndex].cards.findIndex((card) => card.id === over.id);
 
@@ -101,10 +108,10 @@ export default function Home() {
   return (
     <div className="bg-red-500 h-screen w-screen overflow-hidden flex justify-around items-center select-none">
       <DndContext onDragEnd={handleDragEnd} sensors={sensors}>
-        {items.map((item) => (
-          <SortableContext key={item.id} items={["droppable", "droppable2"]}>
-            <Dropper id={item.id} style={styleBoxDropper} title={item.title}>
-              <SortableContext key={item.id} items={item.cards.map((card) => card.id)}>
+        <SortableContext items={items.map(item => item.id)}>
+          {items.map((item) => (
+            <Dropper key={item.id} id={item.id} style={styleBoxDropper} title={item.title}>
+              <SortableContext items={item.cards.map((card) => card.id)}>
                 {item.cards.map((card) => (
                   <DragBox key={card.id} id={card.id}>
                     <div onClick={() => handleCardClick(card)}>
@@ -114,8 +121,8 @@ export default function Home() {
                 ))}
               </SortableContext>
             </Dropper>
-          </SortableContext>
-        ))}
+          ))}
+        </SortableContext>
       </DndContext>
 
       {selectedItem && (
