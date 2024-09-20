@@ -19,8 +19,6 @@ const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClas
     listeners,
     setNodeRef,
     transform,
-    transition,
-    over,
   } = useSortable({ id: id });
 
   const dropperStyles: CSSProperties = {

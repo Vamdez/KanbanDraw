@@ -7,8 +7,11 @@ interface PropsModalBox {
 }
 
 const ModalBox = ({ data, handleClose }: PropsModalBox) => {
+    console.log(data);
     return (
+
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+            {data.status === 'new' && (<div>Ola</div>)}
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <div className="flex justify-between items-center mb-4">
                     <h3 className="text-xl font-semibold text-gray-800">{data.title}</h3>
