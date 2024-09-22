@@ -1,9 +1,9 @@
 import { KanbanItems } from '@/@types/cardBox';
 
 export const styleBoxDropper = {
-  backgroundColor: 'blue',
+  backgroundColor: '#E0E0E0',
   padding: '10px',
-  boxShadow: '0 0 10px #000',
+  boxShadow: '0 0 5px #000',
 };
 
 export const MockData: KanbanItems[] = [

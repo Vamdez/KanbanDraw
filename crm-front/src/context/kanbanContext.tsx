@@ -11,6 +11,7 @@ import { arrayMove } from '@dnd-kit/sortable';
   activeId: UniqueIdentifier | null;
   activeType: 'container' | 'card' | null;
   addCard: (idContainer: string, newCard: CardBox) => void;
+  addDropper: (titleContainer:string, idContainer: string) => void;
   updateCard: (updatedCard: CardBox) => void;
   handleCardClick: (item: CardBox) => void;
   handleCloseModal: () => void;
@@ -32,6 +33,10 @@ export const  KanbanProvider = ({ children }: { children: ReactNode }) => {
         ? { ...container, cards: [...container.cards, newCard] }
         : container
     ));
+  };
+
+  const addDropper = (titleContainer:string, idContainer: string) => {
+    setItems((prev) => [...prev, { id: idContainer, title: titleContainer, cards: [] }]);
   };
 
   const updateCard = (updatedCard: CardBox) => {
@@ -120,6 +125,7 @@ export const  KanbanProvider = ({ children }: { children: ReactNode }) => {
       activeId,
       activeType,
       addCard,
+      addDropper,
       updateCard,
       handleCardClick,
       handleCloseModal,

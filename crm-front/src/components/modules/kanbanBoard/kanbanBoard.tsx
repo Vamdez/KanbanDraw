@@ -8,6 +8,7 @@ import Dropper from '@/components/atoms/dropper/dropper';
 import BoxKanban from '@/components/atoms/Box/boxKanban';
 import ModalBox from '@/components/atoms/ModalBox/modalBox';
 import { AddCardButton } from '@/components/atoms/addCardButton/addCardButton';
+import { AddDropButton } from '@/components/atoms/addDropButton/addDropButton';
 import { useKanban, KanbanContextType } from '@/context/kanbanContext';
 import { styleBoxDropper } from '@utils/templates';
 import { KanbanItems, CardBox } from '@/@types/cardBox';
@@ -21,6 +22,7 @@ const KanbanBoard = () => {
     activeId,
     activeType,
     addCard,
+    addDropper,
     handleCardClick,
     handleCloseModal,
     handleDragStart,
@@ -76,7 +78,7 @@ const KanbanBoard = () => {
   };
 
   return (
-    <div className="bg-red-500 h-screen w-screen overflow-hidden flex items-center select-none">
+    <div className="bg-white h-screen w-screen overflow-hidden flex items-center select-none">
       <DndContext 
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd} 
@@ -99,6 +101,7 @@ const KanbanBoard = () => {
               </Dropper>
             ))}
           </SortableContext>
+          <AddDropButton handleClick={() => addDropper("newContainer", 'Novo' )} />
           <DragOverlay>
             {renderDragOverlay()}
           </DragOverlay>

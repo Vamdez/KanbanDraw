@@ -30,9 +30,9 @@ const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClas
   };
 
   return (
-    <div className="flex flex-col items-center" ref={setNodeRef} {...attributes} {...listeners}>
+    <div className="flex flex-col items-center justify-center" ref={setNodeRef} {...attributes} {...listeners}>
       {title && (
-        <div className={`text-xl font-semibold mb-2 ${titleClassName}`}>
+        <div className={`text-xl font-semibold mb-2 text-gray-600 ${titleClassName}`}>
           {title}
         </div>
       )}
@@ -42,7 +42,7 @@ const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClas
           ${dropperClassName}`}
         style={dropperStyles}
       >
-        <div className="w-full p-4">
+        <div className="w-full p-4 flex flex-col items-center justify-center">
           {children}
         </div>
       </div>
