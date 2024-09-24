@@ -5,18 +5,25 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "back": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts"
+    "back": "nodemon --watch 'src/**/*.ts' --exec 'ts-node' src/index.ts",
+    "migrate": "ts-node -r tsconfig-paths/register ./node_modules/.bin/sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "@types/node": "^22.5.5",
+    "@types/node": "^22.6.1",
+    "@types/pg": "^8.11.10",
     "nodemon": "^3.1.7",
+    "sequelize-cli": "^6.6.2",
     "ts-node": "^10.9.2",
+    "tsconfig-paths": "^4.2.0",
     "typescript": "^5.6.2"
   },
   "dependencies": {
-    "pg": "^8.13.0"
+    "@types/sequelize": "^4.28.20",
+    "dotenv": "^16.4.5",
+    "pg": "^8.13.0",
+    "sequelize": "^6.37.3"
   }
 }
