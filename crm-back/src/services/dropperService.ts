@@ -6,11 +6,21 @@ const getDroppers = async () => {
 };
 
 const getDroppersByProjectId = async (id: number) => {
-    return await db.Dropper.findAll({
+    const droppers = await db.Dropper.findAll({
         where: {
             fk_Project: id
-        }
+        },
+        include: [{
+            model: db.Cards,
+            as: 'cards'  // Certifique-se de que este alias corresponda à sua definição de associação
+        }],
+        order: [
+            ['id', 'ASC'],
+            [{ model: db.Cards, as: 'cards' }, 'position', 'ASC']
+        ]
     });
+
+    return droppers ;
 };
 
 const createDropper = async (dropper: Dropper) => {

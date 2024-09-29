@@ -4,7 +4,7 @@ import { getDroppers, getDroppersByProjectId, createDropper, updateDropper, dele
 const router = Router();
 
 router.get('/', getDroppers);
-router.get('/:id', getDroppersByProjectId);
+router.get('/project/:id', getDroppersByProjectId);
 router.post('/', createDropper);
 router.put('/:id', updateDropper);
 router.delete('/:id', deleteDropper);

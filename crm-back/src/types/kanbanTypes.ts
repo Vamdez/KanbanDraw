@@ -13,7 +13,6 @@ export interface CardCreate {
     fk_Dropper: number;
 }
 
-
 export interface Dropper {
     title: string;
     position: number;
