@@ -1,6 +1,4 @@
-import { DataTypes, Model, Optional } from 'sequelize';
-import db from './index';
-import Dropper from './Dropper';
+import { DataTypes, Model, Optional, Sequelize } from 'sequelize';
 
 interface ProjectAttributes {
   id: number;
@@ -10,8 +8,8 @@ interface ProjectAttributes {
 interface ProjectCreationAttributes extends Optional<ProjectAttributes, 'id'> {}
 
 class Project extends Model<ProjectAttributes, ProjectCreationAttributes> {
-  public id: number;
-  public name: string;
+  public id!: number;
+  public name!: string;
 
   // Método para definir associações
   public static associate(models: any) {
@@ -22,22 +20,24 @@ class Project extends Model<ProjectAttributes, ProjectCreationAttributes> {
   }
 }
 
-Project.init(
-  {
-    id: {
-      type: DataTypes.INTEGER.UNSIGNED,
-      autoIncrement: true,
-      primaryKey: true,
+export default (sequelize: Sequelize) => {
+  Project.init(
+    {
+      id: {
+        type: DataTypes.INTEGER,
+        autoIncrement: true,
+        primaryKey: true,
+      },
+      name: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
     },
-    name: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-  },
-  {
-    sequelize: db.sequelize,
-    tableName: 'projects',
-  }
-);
+    {
+      sequelize,
+      tableName: 'projects',
+    }
+  );
 
-export default Project;
+  return Project;
+};

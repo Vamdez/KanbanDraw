@@ -14,13 +14,8 @@ const kanban = new Client({
   password: 'admin',
 });
 
-kanban.connect();
+kanban.connect()
+    .then(() => console.log('Connect in Database'))
+    .catch((err:Error) => console.log('DataBase Error', err));
 
-kanban.query('Select * from cards;', (err: Error | null, res: {rows: Card[] }) => {
-    if(!err) {
-        console.log(res.rows);
-    } else{
-        console.log(err.message);
-    }
-    kanban.end(); 
-});
+export default kanban;
