@@ -12,8 +12,14 @@ import { AddDropButton } from '@/components/atoms/addDropButton/addDropButton';
 import { useKanban, KanbanContextType } from '@/context/kanbanContext';
 import { styleBoxDropper } from '@utils/templates';
 import { KanbanItems, CardBox } from '@/@types/cardBox';
+import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+
+export interface ModalItem {
+
+}
+
 
 const KanbanBoard = () => {
   const {
@@ -29,7 +35,6 @@ const KanbanBoard = () => {
     handleDragEnd
   }:KanbanContextType = useKanban();
 
-
   const sensors = useSensors(
     useSensor(PointerSensor, {
       activationConstraint: {
@@ -38,12 +43,12 @@ const KanbanBoard = () => {
     })
   );
 
-  const findItemById = (id: UniqueIdentifier): CardBox | KanbanItems | null => {
-    const container = items.find(item => item.id === id);
+  const findItemById = (id: UniqueIdentifier): CardsByDropper | DroppersByProject | null => {
+    const container = items.find(item => item.idDropper === id);
     if (container) return container;
 
     for (const container of items) {
-      const card = container.cards.find(c => c.id === id);
+      const card = container.cards.find(c => c.idCard === id);
       if (card) return card;
     }
     return null;
@@ -56,24 +61,24 @@ const KanbanBoard = () => {
     if (!item) return null;
   
     if (activeType === 'container') {
-      const containerItem = item as KanbanItems;
+      const containerItem = item as DroppersByProject;
       return (
         <Dropper 
-          id={containerItem.id} 
+          id={containerItem.idDropper} 
           style={styleBoxDropper} 
-          title={containerItem.title} 
+          title={containerItem.titleDropper} 
           isDragging
         >
           {containerItem.cards.map((card) => (
-            <DragBox key={card.id} id={card.id}>
-              <BoxKanban title={card.title} type={card.type} />
+            <DragBox key={card.idCard} id={card.idCard}>
+              <BoxKanban title={card.titleCard} content={card.contentCard} />
             </DragBox>
           ))}
         </Dropper>
       );
     } else {
-      const cardItem = item as CardBox;
-      return <BoxKanban title={cardItem.title} type={cardItem.type} />;
+      const cardItem = item as CardsByDropper;
+      return <BoxKanban title={cardItem.titleCard} content={cardItem.contentCard} />;
     }
   };
 
@@ -85,19 +90,19 @@ const KanbanBoard = () => {
         sensors={sensors}
       >
         <div className="flex flex-row gap-4 p-4 min-w-full">
-          <SortableContext items={items.map(item => item.id)} strategy={verticalListSortingStrategy}>
+          <SortableContext items={items.map(item => item.idDropper)} strategy={verticalListSortingStrategy}>
             {items.map((item) => (
-              <Dropper key={item.id} id={item.id} style={styleBoxDropper} title={item.title}>
-                <SortableContext items={item.cards.map((card) => card.id)} strategy={verticalListSortingStrategy}>
+              <Dropper key={item.idDropper} id={item.idDropper} style={styleBoxDropper} title={item.titleDropper}>
+                <SortableContext items={item.cards.map((card) => card.idCard)} strategy={verticalListSortingStrategy}>
                   {item.cards.map((card) => (
-                    <DragBox key={card.id} id={card.id}>
-                      <div onClick={() => handleCardClick(card)}>
-                        <BoxKanban title={card.title} type={card.type} />
+                    <DragBox key={card.idCard} id={card.idCard}>
+                      <div onClick={() => handleCardClick({ idDropper: item.idDropper, titleDropper: item.titleDropper, idCard: card.idCard, titleCard: card.titleCard, contentCard: card.contentCard })}>
+                        <BoxKanban title={card.titleCard} content={card.contentCard} />
                       </div>
                     </DragBox>
                   ))}
                 </SortableContext>
-                <AddCardButton handleClick={() => addCard(item.id, { id: Date.now(), title: 'New Card', type: 'Default', status: item.title })} />
+                <AddCardButton handleClick={() => addCard({ idDropper: item.idDropper, title: 'New Card', content: 'New Content' })} />
               </Dropper>
             ))}
           </SortableContext>

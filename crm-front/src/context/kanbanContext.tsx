@@ -1,19 +1,21 @@
 'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { KanbanItems, CardBox } from '@/@types/cardBox';
+import { AddCard } from '@/@types/card';
+import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
 import { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { MockData } from '@/Utils/templates';
 import { arrayMove } from '@dnd-kit/sortable';
+import { ModalItem } from '@/components/modules/kanbanBoard/kanbanBoardUtils';
 
  export interface KanbanContextType {
-  items: KanbanItems[];
-  selectedItem: CardBox | null;
+  items: DroppersByProject[];
+  selectedItem: ModalItem | null;
   activeId: UniqueIdentifier | null;
   activeType: 'container' | 'card' | null;
-  addCard: (idContainer: string, newCard: CardBox) => void;
+  addCard: (addCard: AddCard) => void;
   addDropper: (titleContainer:string, idContainer: string) => void;
-  updateCard: (updatedCard: CardBox) => void;
-  handleCardClick: (item: CardBox) => void;
+  updateCard: (updatedCard: CardsByDropper) => void;
+  handleCardClick: (item: ModalItem) => void;
   handleCloseModal: () => void;
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => void;
@@ -21,13 +23,19 @@ import { arrayMove } from '@dnd-kit/sortable';
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
 
-export const  KanbanProvider = ({ children }: { children: ReactNode }) => {
-  const [items, setItems] = useState<KanbanItems[]>(MockData);
-  const [selectedItem, setSelectedItem] = useState<CardBox | null>(null);
+interface KanbanProviderProps {
+  children: ReactNode;
+  initialDroppers?: DroppersByProject[];
+}
+
+export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderProps) => {
+  const [items, setItems] = useState<DroppersByProject[]>(initialDroppers || []);
+  const [selectedItem, setSelectedItem] = useState<ModalItem | null>(null);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [activeType, setActiveType] = useState<'container' | 'card' | null>(null);
 
-  const addCard = (idContainer: string, newCard: CardBox) => {
+
+  const addCard = (idContainer: string, newCard: CardsByDropper) => {
     setItems((prev) => prev.map(container => 
       container.id === idContainer 
         ? { ...container, cards: [...container.cards, newCard] }
@@ -39,7 +47,7 @@ export const  KanbanProvider = ({ children }: { children: ReactNode }) => {
     setItems((prev) => [...prev, { id: idContainer, title: titleContainer, cards: [] }]);
   };
 
-  const updateCard = (updatedCard: CardBox) => {
+  const updateCard = (updatedCard: CardsByDropper) => {
     setItems((prev) => prev.map(container => ({
       ...container,
       cards: container.cards.map(card => 
@@ -48,7 +56,7 @@ export const  KanbanProvider = ({ children }: { children: ReactNode }) => {
     })));
   };
 
-  const handleCardClick = (item: CardBox) => {
+  const handleCardClick = (item: ModalItem) => {
     setSelectedItem(item);
   };
 

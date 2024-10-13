@@ -1,13 +1,11 @@
-'use client';
-
 import React from 'react';
 import KanbanBoard from '@/components/modules/kanbanBoard/kanbanBoard';
 import { KanbanProvider } from '@/context/kanbanContext';
+import { feachDroppersbyProject } from './projects';
 
-const Home = () => {
-
+const Home = async () => {
   return (
-    <KanbanProvider>
+    <KanbanProvider initialDroppers={await feachDroppersbyProject(1)}>
       <KanbanBoard />
     </KanbanProvider>
   )

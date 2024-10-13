@@ -1,20 +1,20 @@
 import React from 'react';
-import { CardBox } from '@/@types/cardBox';
+import { CardsByDropper } from '@/@types/fetchProjects';
+import { ModalItem } from '@/components/modules/kanbanBoard/kanbanBoardUtils';
 
 interface PropsModalBox {
-    data: CardBox;
+    data: ModalItem;
     handleClose: () => void;
 }
 
 const ModalBox = ({ data, handleClose }: PropsModalBox) => {
-    console.log(data);
     return (
 
         <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
-            {data.status === 'new' && (<div>Ola</div>)}
+            {data.titleDropper === 'new' && (<div>Ola</div>)}
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-semibold text-gray-800">{data.title}</h3>
+                    <h3 className="text-xl font-semibold text-gray-800">{data.titleCard}</h3>
                     <button 
                         className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
                         onClick={handleClose}
@@ -26,8 +26,8 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
                     </button>
                 </div>
                 <div className="space-y-3">
-                    <p className="text-sm text-gray-600"><span className="font-medium">Type:</span> {data.type}</p>
-                    <p className="text-sm text-gray-600"><span className="font-medium">Status:</span> {data.status}</p>
+                    <p className="text-sm text-gray-600"><span className="font-medium">Title:</span> {data.titleCard}</p>
+                    <p className="text-sm text-gray-600"><span className="font-medium">Content:</span> {data.contentCard}</p>
                 </div>
             </div>
         </div>
