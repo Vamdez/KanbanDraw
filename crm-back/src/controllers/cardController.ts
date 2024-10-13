@@ -21,7 +21,8 @@ export const getCardsByDropperId = async(req: Request, res: Response) => {
         if (error instanceof NotFoundError) {
             res.status(404).json({ message: error.message });
         } else {
-            res.status(500).json({ message: 'Error fetching cards' });
+            console.log(error);
+            res.status(500).json({ message: 'Error fetching cards', error: error});
         }
     }
 };
@@ -32,7 +33,7 @@ export const createCard = async(req: Request, res: Response) => {
         const newCard = await cardService.createCard(card);
         res.status(201).json(newCard);
     } catch (error) {
-        res.status(500).json({ message: 'Error creating card'});
+        res.status(500).json({ message: error});
     }
 };
 

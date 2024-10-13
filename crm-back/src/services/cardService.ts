@@ -1,25 +1,22 @@
 import db from '../models';
 import { Card, CardCreate } from '../types/kanbanTypes';
 import { NotFoundError, ConflictError } from '../errors/customErrors';
+import { where } from 'sequelize';
 
 const getCards = async () => {
     return await db.Cards.findAll();
 };
 
 const getCardsByDropperId = async (id: number) => {
-    const currentDropper = await db.Dropper.findOne({where : {id: id}});
-    if (!currentDropper) {
-        throw new NotFoundError('Dropper not found');
-    }
     return await db.Cards.findAll({
         where: {
-            fk_Dropper: id
+            fk_dropper: id
         }
     });
 };
 
 const createCard = async (card: CardCreate) => {
-    const maxPosition = await db.Cards.max('position');
+    const maxPosition = await db.Cards.max('position', { where: { fk_dropper: card.fk_dropper } });
     const newCard: Card = {
         ...card,
         position: maxPosition ? maxPosition + 1 : 1,
@@ -35,7 +32,7 @@ const updateCard = async (id: number, card: Card) => {
 
     const existingCard = await db.Cards.findOne({
         where: {
-            fk_Dropper: currentCard.fk_Dropper,
+            fk_dropper: currentCard.fk_dropper,
             position: card.position,
         }
     });

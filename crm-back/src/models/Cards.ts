@@ -6,11 +6,11 @@ interface CardsAttributes {
   titulo: string;
   content: string;
   position: number;
-  fk_Dropper: number;
-  createdAt: Date;
-  updatedAt: Date;
+  fk_dropper: number;
+  created_at: Date;
+  updated_at: Date;
 }
-
+//TO DO: Change upperCase Columns Table to lowerCase
 interface CardsCreationAttributes extends Optional<CardsAttributes, 'id'> {}
 
 export class Cards extends Model<CardsAttributes, CardsCreationAttributes> {
@@ -18,13 +18,13 @@ export class Cards extends Model<CardsAttributes, CardsCreationAttributes> {
   public titulo!: string;
   public content!: string;
   public position!: number;
-  public fk_Dropper!: number;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
+  public fk_dropper!: number;
+  public readonly created_at!: Date;
+  public readonly updated_at!: Date;
 
   public static associate(models: any) {
     Cards.belongsTo(models.Dropper, {
-      foreignKey: 'fk_Dropper',
+      foreignKey: 'fk_dropper',
       as: 'dropper',
     });
   }
@@ -50,16 +50,16 @@ export default (sequelize: Sequelize, DataTypes: any) => {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      fk_Dropper: {
+      fk_dropper: {
         type: DataTypes.INTEGER,
         allowNull: false,
       },
-      createdAt: {
+      created_at: {
         type: DataTypes.DATE,
         field: 'created_at',
         allowNull: false,
       },
-      updatedAt: {
+      updated_at: {
         type: DataTypes.DATE,
         field: 'updated_at',
         allowNull: false,
@@ -67,6 +67,7 @@ export default (sequelize: Sequelize, DataTypes: any) => {
     },
     {
       sequelize,
+      timestamps: false,
       tableName: 'cards',
     }
   );
