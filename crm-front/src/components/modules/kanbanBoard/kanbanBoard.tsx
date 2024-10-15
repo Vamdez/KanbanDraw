@@ -15,6 +15,7 @@ import { KanbanItems, CardBox } from '@/@types/cardBox';
 import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { useEffect } from 'react';
 
 export interface ModalItem {
 
@@ -53,6 +54,15 @@ const KanbanBoard = () => {
     }
     return null;
   };
+
+  const autoSave = ()
+
+  useEffect(() => {
+    fetchData();
+    const intervalId = setInterval(autoSave, 30000);
+
+    return () => clearInterval(intervalId);
+  }, [autoSave]);
 
   const renderDragOverlay = () => {
     if (!activeId) return null;
@@ -102,11 +112,11 @@ const KanbanBoard = () => {
                     </DragBox>
                   ))}
                 </SortableContext>
-                <AddCardButton handleClick={() => addCard({ idDropper: item.idDropper, title: 'New Card', content: 'New Content' })} />
+                <AddCardButton handleClick={() => addCard(item.idDropper, {idCard: 0, titleCard: 'New Card', contentCard: 'New Content', positionCard: item.cards.length })} />
               </Dropper>
             ))}
           </SortableContext>
-          <AddDropButton handleClick={() => addDropper("newContainer", 'Novo' )} />
+          <AddDropButton handleClick={() => addDropper("newAddc", 'Novo' )} />
           <DragOverlay>
             {renderDragOverlay()}
           </DragOverlay>

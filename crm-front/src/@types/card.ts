@@ -1,6 +1,7 @@
 export interface AddCard {
-    title: string;
-    content: string;
-    idDropper: number;
+    idCard: number;
+    titleCard: string;
+    contentCard: string;
+    positionCard: number;
 }
 

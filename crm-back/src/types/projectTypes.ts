@@ -1,3 +1,5 @@
+import { Dropper } from "./kanbanTypes";
+
 export interface Card {
     idCard: number;
     titleCard: string;
@@ -24,4 +26,26 @@ export interface DroppersbyProject{
     positionCard: number;
     createdAtCard: Date;
     updatedAtCard: Date;
+}
+
+export interface CardRequest {
+    id?: number;
+    titulo: string;
+    content: string;
+    position: number;
+    fk_dropper: number;
+}
+
+export interface DropperRequest {
+    id?: number;
+    title: string;
+    position: number;
+    fk_projects: number;
+}
+
+export interface ProjectUpdateRequest {
+    droppers : DropperRequest[];
+    cards: CardRequest[];
+    cardsIdDelete: number[];
+    droppersIdDelete: number[];
 }

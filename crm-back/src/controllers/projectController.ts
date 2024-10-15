@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import projectService from '../services/projectService';
-import { Project } from '../types/kanbanTypes';
 
 export const getProjects = async(req: Request, res: Response) => {
     try {
@@ -34,8 +33,7 @@ export const createProject = async(req: Request, res: Response) => {
 export const updateProject = async(req: Request, res: Response) => {
     try {
         const project = req.body;
-        const id = parseInt(req.params.id, 10);
-        const updatedProject = await projectService.updateProject(id, project);
+        const updatedProject = await projectService.updateProjects(project);
         res.status(200).json(updatedProject);
     } catch (error) {
         res.status(500).json({ message: 'Error updating project'});

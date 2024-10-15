@@ -1,6 +1,6 @@
 import React from 'react';
 import { CardsByDropper } from '@/@types/fetchProjects';
-import { ModalItem } from '@/components/modules/kanbanBoard/kanbanBoardUtils';
+import { ModalItem } from '@/@types/kanbanBoardTypes';
 
 interface PropsModalBox {
     data: ModalItem;

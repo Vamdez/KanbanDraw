@@ -2,18 +2,18 @@
 import React, { createContext, useContext, useState, ReactNode } from 'react';
 import { AddCard } from '@/@types/card';
 import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
+import { RequestCard, RequestDropper, CardItems, DroppersItems, ModalItem } from '@/@types/kanbanBoardTypes';
 import { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { MockData } from '@/Utils/templates';
 import { arrayMove } from '@dnd-kit/sortable';
-import { ModalItem } from '@/components/modules/kanbanBoard/kanbanBoardUtils';
 
  export interface KanbanContextType {
   items: DroppersByProject[];
   selectedItem: ModalItem | null;
   activeId: UniqueIdentifier | null;
   activeType: 'container' | 'card' | null;
-  addCard: (addCard: AddCard) => void;
-  addDropper: (titleContainer:string, idContainer: string) => void;
+  addCard: (addCard: CardItems) => void;
+  addDropper: (dropper: DroppersItems) => void;
   updateCard: (updatedCard: CardsByDropper) => void;
   handleCardClick: (item: ModalItem) => void;
   handleCloseModal: () => void;
@@ -31,29 +31,38 @@ interface KanbanProviderProps {
 export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderProps) => {
   const [items, setItems] = useState<DroppersByProject[]>(initialDroppers || []);
   const [selectedItem, setSelectedItem] = useState<ModalItem | null>(null);
+  const [ cards, setCards ] = useState<RequestCard[]>([]);
+  const [ droppers, setDroppers ] = useState<RequestDropper[]>([]);
+  const [deleteCard, setDeleteCard] = useState<number[]>([]);
+  const [deleteDropper, setDeleteDropper] = useState<number[]>([]);
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [activeType, setActiveType] = useState<'container' | 'card' | null>(null);
 
 
-  const addCard = (idContainer: string, newCard: CardsByDropper) => {
-    setItems((prev) => prev.map(container => 
-      container.id === idContainer 
-        ? { ...container, cards: [...container.cards, newCard] }
-        : container
+  const addCard = (idDropper: number, newCard: CardItems) => {
+    setItems((prev) => prev.map(dropper => 
+      dropper.idDropper === idDropper
+        ? { ...dropper, cards: [...dropper.cards, newCard] }
+        : dropper
     ));
+    setCards((prev) => [...prev, { idCard: newCard.idCard, idDropper: idDropper, titleCard: newCard.titleCard, contentCard: newCard.contentCard, positionCard: newCard.positionCard }]);
   };
 
-  const addDropper = (titleContainer:string, idContainer: string) => {
-    setItems((prev) => [...prev, { id: idContainer, title: titleContainer, cards: [] }]);
+  const addDropper = (dropper: DroppersItems) => {
+    setItems((prev) => [...prev, { idDropper: dropper.idDropper, titleDropper: dropper.titleDropper, positionDropper: dropper.positionDropper, cards: [] }]);
+    setDroppers((prev) => [...prev, { idDropper: dropper.idDropper, titleDropper: dropper.titleDropper, positionDropper: dropper.positionDropper }]);
   };
 
-  const updateCard = (updatedCard: CardsByDropper) => {
+  const updateCard = (idDropper: number, updatedCard: CardItems) => {
     setItems((prev) => prev.map(container => ({
       ...container,
       cards: container.cards.map(card => 
-        card.id === updatedCard.id ? updatedCard : card
+        card.idCard === updatedCard.idCard ? updatedCard : card
       )
     })));
+    setCards((prev) => prev.map(card => 
+      card.idCard === updatedCard.idCard ? { idCard: updatedCard.idCard, idDropper: idDropper, titleCard: updatedCard.titleCard, contentCard: updatedCard.contentCard, positionCard: updatedCard.positionCard } : card
+    ));
   };
 
   const handleCardClick = (item: ModalItem) => {

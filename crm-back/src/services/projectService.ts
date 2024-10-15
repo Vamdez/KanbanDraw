@@ -1,10 +1,58 @@
-import { title } from 'process';
 import db from '../models';
 import { Project } from '../types/kanbanTypes';
-import { ProjectbyIdResponse, DroppersbyProject, Card } from '../types/projectTypes';
+import { ProjectbyIdResponse, DroppersbyProject, CardRequest, Card, ProjectUpdateRequest, DropperRequest } from '../types/projectTypes';
 
 const getProjects = async () => {
     return await db.Project.findAll();
+};
+
+const updateProjects = async (projectStructure: ProjectUpdateRequest) => {
+    const t = await db.sequelize.transaction();
+
+    try {
+        const droppersToUpdate = projectStructure.droppers.filter(d => d.id);
+        const droppersToInsert = projectStructure.droppers.filter(d => !d.id);
+
+        await db.Dropper.bulkCreate(droppersToInsert, { transaction: t });
+
+        if (droppersToUpdate.length > 0) {
+            await db.Dropper.bulkCreate(droppersToUpdate, {
+                updateOnDuplicate: ['title', 'position', 'fk_projects'],
+            }, { transaction: t });
+        }
+
+        const cardsToUpdate = projectStructure.cards.filter(c => c.id);
+        const cardsToInsert = projectStructure.cards.filter(c => !c.id);
+
+        await db.Cards.bulkCreate(cardsToInsert, { transaction: t });
+
+        if (cardsToUpdate.length > 0) {
+            await db.Cards.bulkCreate(cardsToUpdate, {
+                updateOnDuplicate: ['titulo', 'content', 'position', 'fk_dropper'],
+            }, { transaction: t });
+        }
+
+        if (projectStructure.cardsIdDelete.length > 0) {
+            await db.Cards.destroy({
+                where: {
+                    id: projectStructure.cardsIdDelete
+                }
+            }, { transaction: t });
+        }
+
+        if (projectStructure.droppersIdDelete.length > 0) {
+            await db.Dropper.destroy({
+                where: {
+                    id: projectStructure.droppersIdDelete
+                }
+            }, { transaction: t });
+        }
+
+        await t.commit();
+    } catch (error) {
+        await t.rollback();
+        throw error;
+    }
 };
 
 const getProjectbyId = async (id: number): Promise<DroppersbyProject[]> => {
@@ -30,9 +78,14 @@ const getProjectbyId = async (id: number): Promise<DroppersbyProject[]> => {
                     ['position', 'positionCard'],
                     ['created_at', 'createdAtCard'],
                     ['updated_at', 'updatedAtCard']
-                ]
+                ],
             }
-        ]
+        ],
+        order:
+            [
+                ['position', 'ASC'],
+                [{ model: db.Cards, as: 'cards' }, 'position', 'ASC']
+            ]
     });
 
     return droppers.map((dropper: any): ProjectbyIdResponse => ({
@@ -54,14 +107,6 @@ const createProject = async (project: Project) => {
     return await db.Project.create(project);
 };
 
-const updateProject = async (id: number, project: Project) => {
-    return await db.Project.update(project, {
-        where: {
-            id: id
-        }
-    });
-};
-
 const deleteProject = async (id: number) => {
     return await db.Project.destroy({
         where: {
@@ -73,7 +118,7 @@ const deleteProject = async (id: number) => {
 export default {
     getProjects,
     createProject,
-    updateProject,
     deleteProject,
-    getProjectbyId
+    getProjectbyId,
+    updateProjects
 };
