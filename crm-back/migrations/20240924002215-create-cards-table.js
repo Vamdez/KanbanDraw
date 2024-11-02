@@ -70,7 +70,7 @@ module.exports = {
         autoIncrement: true,
         primaryKey: true,
       },
-      titulo: {
+      title: {
         type: Sequelize.STRING,
         allowNull: false,
       },

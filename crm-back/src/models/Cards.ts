@@ -3,7 +3,7 @@ import { Sequelize } from 'sequelize';
 
 interface CardsAttributes {
   id: number;
-  titulo: string;
+  title: string;
   content: string;
   position: number;
   fk_dropper: number;
@@ -15,7 +15,7 @@ interface CardsCreationAttributes extends Optional<CardsAttributes, 'id'> {}
 
 export class Cards extends Model<CardsAttributes, CardsCreationAttributes> {
   public id!: number;
-  public titulo!: string;
+  public title!: string;
   public content!: string;
   public position!: number;
   public fk_dropper!: number;
@@ -38,7 +38,7 @@ export default (sequelize: Sequelize, DataTypes: any) => {
         autoIncrement: true,
         primaryKey: true,
       },
-      titulo: {
+      title: {
         type: DataTypes.STRING,
         allowNull: false,
       },

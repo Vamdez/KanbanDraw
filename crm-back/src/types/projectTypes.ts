@@ -30,7 +30,7 @@ export interface DroppersbyProject{
 
 export interface CardRequest {
     id?: number;
-    titulo: string;
+    title: string;
     content: string;
     position: number;
     fk_dropper: number;

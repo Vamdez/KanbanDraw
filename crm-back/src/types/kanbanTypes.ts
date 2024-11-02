@@ -1,12 +1,12 @@
 export interface Card {
-    titulo: string;
+    title: string;
     content: string;
     position: number;
     fk_dropper: number;
 }
 
 export interface CardCreate {
-    titulo: string;
+    title: string;
     content: string;
     fk_dropper: number;
 }

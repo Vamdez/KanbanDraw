@@ -27,7 +27,7 @@ const updateProjects = async (projectStructure: ProjectUpdateRequest) => {
 
         if (cardsToUpdate.length > 0) {
             await db.Cards.bulkCreate(cardsToUpdate, {
-                updateOnDuplicate: ['titulo', 'content', 'position', 'fk_dropper'],
+                updateOnDuplicate: ['title', 'content', 'position', 'fk_dropper'],
             }, { transaction: t });
         }
 
@@ -72,7 +72,7 @@ const getProjectbyId = async (id: number): Promise<DroppersbyProject[]> => {
                 required: false,
                 attributes: [
                     ['id', 'idCard'],
-                    ['titulo', 'titleCard'],
+                    ['title', 'titleCard'],
                     ['content', 'contentCard'],
                     ['position', 'positionCard'],
                     ['created_at', 'createdAtCard'],

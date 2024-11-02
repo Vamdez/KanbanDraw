@@ -111,11 +111,11 @@ const KanbanBoard = () => {
                     </DragBox>
                   ))}
                 </SortableContext>
-                <AddCardButton handleClick={() => addCard(item.idDropper, {idCard: 0, titleCard: 'New Card', contentCard: 'New Content', positionCard: item.cards.length })} />
+                <AddCardButton handleClick={() => addCard(item.idDropper, {titleCard: 'New Card', contentCard: 'New Content', positionCard: item.cards.length+1})} />
               </Dropper>
             ))}
           </SortableContext>
-          <AddDropButton handleClick={() => {addDropper({ titleDropper: 'newDropper', positionDropper: items.length })}}
+          <AddDropButton handleClick={() => {addDropper({ titleDropper: 'newDropper', positionDropper: items.length+1})}}
             />
           <DragOverlay>
             {renderDragOverlay()}

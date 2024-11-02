@@ -53,9 +53,8 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
         fk_dropper: idDropper,
       },
     ];
-    
     setCards(updatedCard);
-    await updateDroppersbyProject(droppers, cards, deleteCard, deleteDropper);
+    await updateDroppersbyProject(droppers, updatedCard, deleteCard, deleteDropper);
     const response = await feachDroppersbyProject(1);
     setItems(response.droppers);
   };

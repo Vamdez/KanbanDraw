@@ -1,11 +1,5 @@
 const { Client } = require('pg');
 
-interface Card {
-    id: number;
-    titulo: string;
-    tipo: string;
-}
-
 const kanban = new Client({
   host: 'localhost',
   port: 5432,
