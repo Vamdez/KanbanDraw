@@ -1,3 +1,5 @@
+import { RequestCard, RequestDropper } from "./kanbanBoardTypes";
+
 export interface CardsByDropper {
     idCard?: number;
     titleCard: string;
@@ -10,4 +12,11 @@ export interface DroppersByProject {
     titleDropper: string;
     positionDropper: number;
     cards: CardsByDropper[];
+}
+
+export interface ProjectUpdateRequest {
+    droppers : RequestDropper[];
+    cards: RequestCard[];
+    cardsIdDelete: number[];
+    droppersIdDelete: number[];
 }

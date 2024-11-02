@@ -11,7 +11,6 @@ import { AddCardButton } from '@/components/atoms/addCardButton/addCardButton';
 import { AddDropButton } from '@/components/atoms/addDropButton/addDropButton';
 import { useKanban, KanbanContextType } from '@/context/kanbanContext';
 import { styleBoxDropper } from '@utils/templates';
-import { KanbanItems, CardBox } from '@/@types/cardBox';
 import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
@@ -55,14 +54,14 @@ const KanbanBoard = () => {
     return null;
   };
 
-  const autoSave = ()
+  // const autoSave = ()
 
-  useEffect(() => {
-    fetchData();
-    const intervalId = setInterval(autoSave, 30000);
+  // useEffect(() => {
+  //   fetchData();
+  //   const intervalId = setInterval(autoSave, 30000);
 
-    return () => clearInterval(intervalId);
-  }, [autoSave]);
+  //   return () => clearInterval(intervalId);
+  // }, [autoSave]);
 
   const renderDragOverlay = () => {
     if (!activeId) return null;
@@ -116,7 +115,8 @@ const KanbanBoard = () => {
               </Dropper>
             ))}
           </SortableContext>
-          <AddDropButton handleClick={() => addDropper("newAddc", 'Novo' )} />
+          <AddDropButton handleClick={() => {addDropper({ titleDropper: 'newDropper', positionDropper: items.length })}}
+            />
           <DragOverlay>
             {renderDragOverlay()}
           </DragOverlay>

@@ -1,19 +1,18 @@
 'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { AddCard } from '@/@types/card';
 import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
-import { RequestCard, RequestDropper, CardItems, DroppersItems, ModalItem } from '@/@types/kanbanBoardTypes';
+import { RequestCard, RequestDropper, CardItems, DroppersItems, ModalItem, newDroppersItem, newCardItem } from '@/@types/kanbanBoardTypes';
 import { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
-import { MockData } from '@/Utils/templates';
 import { arrayMove } from '@dnd-kit/sortable';
+import { feachDroppersbyProject, updateDroppersbyProject } from '@/app/(routes)/home/projects';
 
  export interface KanbanContextType {
   items: DroppersByProject[];
   selectedItem: ModalItem | null;
   activeId: UniqueIdentifier | null;
   activeType: 'container' | 'card' | null;
-  addCard: (addCard: CardItems) => void;
-  addDropper: (dropper: DroppersItems) => void;
+  addCard: (idDropper: number|undefined, addCard: newCardItem) => void;
+  addDropper: (dropper: newDroppersItem) => void;
   updateCard: (updatedCard: CardsByDropper) => void;
   handleCardClick: (item: ModalItem) => void;
   handleCloseModal: () => void;
@@ -39,18 +38,43 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
   const [activeType, setActiveType] = useState<'container' | 'card' | null>(null);
 
 
-  const addCard = (idDropper: number, newCard: CardItems) => {
+  const addCard = async(idDropper: number, newCard: newCardItem) => {
     setItems((prev) => prev.map(dropper => 
       dropper.idDropper === idDropper
         ? { ...dropper, cards: [...dropper.cards, newCard] }
         : dropper
     ));
-    setCards((prev) => [...prev, { idCard: newCard.idCard, idDropper: idDropper, titleCard: newCard.titleCard, contentCard: newCard.contentCard, positionCard: newCard.positionCard }]);
+    const updatedCard = [
+      ...cards,
+      {
+        title: newCard.titleCard,
+        position: newCard.positionCard,
+        content: newCard.contentCard,
+        fk_dropper: idDropper,
+      },
+    ];
+    
+    setCards(updatedCard);
+    await updateDroppersbyProject(droppers, cards, deleteCard, deleteDropper);
+    const response = await feachDroppersbyProject(1);
+    setItems(response.droppers);
   };
 
-  const addDropper = (dropper: DroppersItems) => {
-    setItems((prev) => [...prev, { idDropper: dropper.idDropper, titleDropper: dropper.titleDropper, positionDropper: dropper.positionDropper, cards: [] }]);
-    setDroppers((prev) => [...prev, { idDropper: dropper.idDropper, titleDropper: dropper.titleDropper, positionDropper: dropper.positionDropper }]);
+  const addDropper = async(dropper: newDroppersItem) => {
+    setItems((prev) => [...prev, { titleDropper: dropper.titleDropper, positionDropper: dropper.positionDropper, cards: [] }]);
+    const updatedDroppers = [
+      ...droppers,
+      {
+        title: dropper.titleDropper,
+        position: dropper.positionDropper,
+        fk_project: 1,
+      },
+    ];
+    
+    setDroppers(updatedDroppers);
+    await updateDroppersbyProject(updatedDroppers, cards, deleteCard, deleteDropper);
+    const response = await feachDroppersbyProject(1);
+    setItems(response.droppers);
   };
 
   const updateCard = (idDropper: number, updatedCard: CardItems) => {

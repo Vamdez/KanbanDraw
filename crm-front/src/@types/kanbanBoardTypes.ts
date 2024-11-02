@@ -1,15 +1,27 @@
 export interface CardItems {
-    idCard?: number;
+    idCard: number;
     titleCard: string;
     contentCard: string;
     positionCard: number;
 }
 
 export interface DroppersItems {
-    idDropper?: number;
+    idDropper: number;
     titleDropper: string;
     positionDropper: number;
 }
+
+export interface newCardItem {
+    titleCard: string;
+    contentCard: string;
+    positionCard: number;
+}
+
+export interface newDroppersItem {
+    titleDropper: string;
+    positionDropper: number;
+}
+
 
 export interface ItemsProject {
     idDropper: number;
@@ -19,17 +31,18 @@ export interface ItemsProject {
 }
 
 export interface RequestCard {
-    idCard?: number;
-    idDropper: number;
-    titleCard: string;
-    contentCard: string;
-    positionCard: number;
+    id?: number;
+    fk_dropper: number;
+    title: string;
+    content: string;
+    position: number;
 }
 
 export interface RequestDropper {
-    idDropper?: number;
-    titleDropper: string;
-    positionDropper: number;
+    id?: number;
+    title: string;
+    position: number;
+    fk_project: number;
 }
 
 export interface ModalItem {

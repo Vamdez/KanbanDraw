@@ -8,7 +8,6 @@ const getProjects = async () => {
 
 const updateProjects = async (projectStructure: ProjectUpdateRequest) => {
     const t = await db.sequelize.transaction();
-
     try {
         const droppersToUpdate = projectStructure.droppers.filter(d => d.id);
         const droppersToInsert = projectStructure.droppers.filter(d => !d.id);
