@@ -4,7 +4,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
 
 interface PropsDropper {
-  id: UniqueIdentifier;
+  id: number;
   children: React.ReactNode;
   style?: CSSProperties;
   title?: string;
@@ -19,7 +19,13 @@ const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClas
     listeners,
     setNodeRef,
     transform,
-  } = useSortable({ id: id });
+  } = useSortable({
+        id: id+"Dropper",
+        data: {
+          type:"container",
+          id: id
+        } 
+      });
 
   const dropperStyles: CSSProperties = {
     ...style,

@@ -11,7 +11,7 @@ import { AddCardButton } from '@/components/atoms/addCardButton/addCardButton';
 import { AddDropButton } from '@/components/atoms/addDropButton/addDropButton';
 import { useKanban, KanbanContextType } from '@/context/kanbanContext';
 import { styleBoxDropper } from '@utils/templates';
-import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
+import { DroppersByProject, CardsByDropper, ItemsByProject } from '@/@types/fetchProjects';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { useEffect } from 'react';
@@ -43,16 +43,7 @@ const KanbanBoard = () => {
     })
   );
 
-  const findItemById = (id: UniqueIdentifier): CardsByDropper | DroppersByProject | null => {
-    const container = items.find(item => item.idDropper === id);
-    if (container) return container;
-
-    for (const container of items) {
-      const card = container.cards.find(c => c.idCard === id);
-      if (card) return card;
-    }
-    return null;
-  };
+  console.log("ITEMS", items);
 
   // const autoSave = ()
 
@@ -66,11 +57,10 @@ const KanbanBoard = () => {
   const renderDragOverlay = () => {
     if (!activeId) return null;
   
-    const item = findItemById(activeId);
-    if (!item) return null;
-  
     if (activeType === 'container') {
-      const containerItem = item as DroppersByProject;
+      const item = items.find(item => item.idDropper === activeId);
+      const containerItem = item as ItemsByProject;
+      console.log("Container", containerItem);
       return (
         <Dropper 
           id={containerItem.idDropper} 
@@ -86,7 +76,16 @@ const KanbanBoard = () => {
         </Dropper>
       );
     } else {
+      let item;
+      for (const container of items) {
+        const card = container.cards.find(c => c.idCard === activeId);
+        if (card){
+          item = card;
+          break;
+        };
+      }
       const cardItem = item as CardsByDropper;
+      console.log("Card", cardItem);
       return <BoxKanban title={cardItem.titleCard} content={cardItem.contentCard} />;
     }
   };
@@ -104,7 +103,7 @@ const KanbanBoard = () => {
               <Dropper key={item.idDropper} id={item.idDropper} style={styleBoxDropper} title={item.titleDropper}>
                 <SortableContext items={item.cards.map((card) => card.idCard)} strategy={verticalListSortingStrategy}>
                   {item.cards.map((card) => (
-                    <DragBox key={card.idCard} id={card.idCard}>
+                    <DragBox key={card.idCard} id={card.idCard ? card.idCard : 0}>
                       <div onClick={() => handleCardClick({ idDropper: item.idDropper, titleDropper: item.titleDropper, idCard: card.idCard, titleCard: card.titleCard, contentCard: card.contentCard })}>
                         <BoxKanban title={card.titleCard} content={card.contentCard} />
                       </div>

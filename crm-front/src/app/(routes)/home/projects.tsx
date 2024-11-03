@@ -1,8 +1,8 @@
 import { RequestCard, RequestDropper } from "@/@types/kanbanBoardTypes";
-import { ProjectUpdateRequest } from "@/@types/fetchProjects";
+import { ProjectUpdateRequest, ItemsByProject } from "@/@types/fetchProjects";
 
 
-export const feachDroppersbyProject = async (idProject: number) => {
+export const feachDroppersbyProject= async (idProject: number) => {
     const response = await fetch(`http://localhost:8000/projects/${idProject}`);
     return await response.json();
 }

@@ -1,13 +1,13 @@
 'use client';
 import React, { createContext, useContext, useState, ReactNode } from 'react';
-import { DroppersByProject, CardsByDropper } from '@/@types/fetchProjects';
+import { DroppersByProject, CardsByDropper, ItemsByProject, CardsByItems } from '@/@types/fetchProjects';
 import { RequestCard, RequestDropper, CardItems, DroppersItems, ModalItem, newDroppersItem, newCardItem } from '@/@types/kanbanBoardTypes';
 import { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import { feachDroppersbyProject, updateDroppersbyProject } from '@/app/(routes)/home/projects';
 
  export interface KanbanContextType {
-  items: DroppersByProject[];
+  items: ItemsByProject[];
   selectedItem: ModalItem | null;
   activeId: UniqueIdentifier | null;
   activeType: 'container' | 'card' | null;
@@ -24,11 +24,11 @@ const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
 
 interface KanbanProviderProps {
   children: ReactNode;
-  initialDroppers?: DroppersByProject[];
+  initialDroppers?: ItemsByProject[];
 }
 
 export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderProps) => {
-  const [items, setItems] = useState<DroppersByProject[]>(initialDroppers || []);
+  const [items, setItems] = useState<ItemsByProject[]>(initialDroppers || []);
   const [selectedItem, setSelectedItem] = useState<ModalItem | null>(null);
   const [ cards, setCards ] = useState<RequestCard[]>([]);
   const [ droppers, setDroppers ] = useState<RequestDropper[]>([]);
@@ -37,13 +37,14 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
   const [activeType, setActiveType] = useState<'container' | 'card' | null>(null);
 
+  const resetState = () => {
+    setCards([]);
+    setDroppers([]);
+    setDeleteCard([]);
+    setDeleteDropper([]);
+  }
 
   const addCard = async(idDropper: number, newCard: newCardItem) => {
-    setItems((prev) => prev.map(dropper => 
-      dropper.idDropper === idDropper
-        ? { ...dropper, cards: [...dropper.cards, newCard] }
-        : dropper
-    ));
     const updatedCard = [
       ...cards,
       {
@@ -55,12 +56,12 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
     ];
     setCards(updatedCard);
     await updateDroppersbyProject(droppers, updatedCard, deleteCard, deleteDropper);
+    resetState();
     const response = await feachDroppersbyProject(1);
-    setItems(response.droppers);
+    setItems(response);
   };
 
   const addDropper = async(dropper: newDroppersItem) => {
-    setItems((prev) => [...prev, { titleDropper: dropper.titleDropper, positionDropper: dropper.positionDropper, cards: [] }]);
     const updatedDroppers = [
       ...droppers,
       {
@@ -72,8 +73,9 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
     
     setDroppers(updatedDroppers);
     await updateDroppersbyProject(updatedDroppers, cards, deleteCard, deleteDropper);
+    resetState();
     const response = await feachDroppersbyProject(1);
-    setItems(response.droppers);
+    setItems(response);
   };
 
   const updateCard = (idDropper: number, updatedCard: CardItems) => {
@@ -83,9 +85,14 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
         card.idCard === updatedCard.idCard ? updatedCard : card
       )
     })));
-    setCards((prev) => prev.map(card => 
-      card.idCard === updatedCard.idCard ? { idCard: updatedCard.idCard, idDropper: idDropper, titleCard: updatedCard.titleCard, contentCard: updatedCard.contentCard, positionCard: updatedCard.positionCard } : card
-    ));
+    setCards((prev) => prev.map(card => ({
+      ...card,
+      idDropper: idDropper,
+      idCard: updatedCard.idCard,
+      titleCard: updatedCard.titleCard,
+      contentCard: updatedCard.contentCard,
+      positionCard: updatedCard.positionCard,
+    })));
   };
 
   const handleCardClick = (item: ModalItem) => {
@@ -97,9 +104,10 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
   };
 
   const handleDragStart = (event: DragStartEvent) => {
+    console.log("DRAG START", event);
     const { active } = event;
-    setActiveId(active.id);
-    setActiveType(items.some(item => item.id === active.id) ? 'container' : 'card');
+    setActiveId(active.data.current?.id);
+    setActiveType(active.data.current?.type);
   };
 
   const handleDragEnd = (event: DragEndEvent) => {

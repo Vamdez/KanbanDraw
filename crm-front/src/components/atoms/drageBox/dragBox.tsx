@@ -9,7 +9,11 @@ interface PropsDragBox {
 
 const DragBox : React.FC<PropsDragBox> = ({ id, children }) => {
   const {attributes, listeners, setNodeRef, transform, isDragging} = useSortable({
-    id: id,
+    id: id+"Card",
+    data: {
+      type:"card",
+      id: id
+    }
   });
 
   const style = {
