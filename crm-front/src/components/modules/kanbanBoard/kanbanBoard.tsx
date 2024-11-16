@@ -45,15 +45,6 @@ const KanbanBoard = () => {
 
   console.log("ITEMS", items);
 
-  // const autoSave = ()
-
-  // useEffect(() => {
-  //   fetchData();
-  //   const intervalId = setInterval(autoSave, 30000);
-
-  //   return () => clearInterval(intervalId);
-  // }, [autoSave]);
-
   const renderDragOverlay = () => {
     if (!activeId) return null;
   

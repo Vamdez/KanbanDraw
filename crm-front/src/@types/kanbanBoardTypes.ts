@@ -22,27 +22,11 @@ export interface newDroppersItem {
     positionDropper: number;
 }
 
-
 export interface ItemsProject {
     idDropper: number;
     titleDropper: string;
     positionDropper: number;
     cards: CardItems[];
-}
-
-export interface RequestCard {
-    id?: number;
-    fk_dropper: number;
-    title: string;
-    content: string;
-    position: number;
-}
-
-export interface RequestDropper {
-    id?: number;
-    title: string;
-    position: number;
-    fk_project: number;
 }
 
 export interface ModalItem {
