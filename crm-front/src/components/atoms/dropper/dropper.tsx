@@ -2,6 +2,7 @@ import React, { CSSProperties } from 'react';
 import { UniqueIdentifier } from '@dnd-kit/core';
 import { CSS } from '@dnd-kit/utilities';
 import { useSortable } from '@dnd-kit/sortable';
+import { KanbanContextType, useKanban } from '@/context/kanbanContext';
 
 interface PropsDropper {
   id: number;
@@ -14,6 +15,11 @@ interface PropsDropper {
 }
 
 const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClassName, dropperClassName, isDragging }) => {
+
+  const {
+    deleteDroppers
+  }:KanbanContextType = useKanban();
+
   const {
     attributes,
     listeners,
@@ -43,12 +49,15 @@ const Dropper: React.FC<PropsDropper> = ({ id, children, style, title, titleClas
         </div>
       )}
       <div
-        className={`w-[300px] h-[300px] rounded-xl border-2 
+        className={`w-[300px] h-[700px] rounded-xl border-2 
           flex justify-center items-center transition-all duration-200 ease-in-out 
           ${dropperClassName}`}
-        style={dropperStyles}
-      >
-        <div className="w-full p-4 flex flex-col items-center justify-center">
+          style={dropperStyles}
+          >
+        <span color='black'  
+              className='text-xl font-semibold mb-2 text-gray-600 absolute top-2 right-4'
+              onClick={() => deleteDroppers(id)}>x</span>
+        <div className="w-full p-4 flex flex-col items-center justify-center overflow-auto">
           {children}
         </div>
       </div>

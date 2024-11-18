@@ -17,6 +17,8 @@ import { feachDroppersbyProject, updateDroppersbyProject } from '@/app/(routes)/
   handleCloseModal: () => void;
   handleDragStart: (event: DragStartEvent) => void;
   handleDragEnd: (event: DragEndEvent) => void;
+  deleteCards: (idCard: number) => void;
+  deleteDroppers: (idDropper: number) => void;
 }
 
 const KanbanContext = createContext<KanbanContextType | undefined>(undefined);
@@ -76,7 +78,7 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
   };
 
   useEffect(() => {
-    const intervalId = setInterval(autoSave, 30000);
+    const intervalId = setInterval(autoSave, 10000);
     return () => clearInterval(intervalId);
   }, [autoSave]);
 
@@ -139,59 +141,69 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
       const { active, over } = event; 
 
       if (over && active.id !== over.id) {
-          setItems((prev) => {
-            const activeContainerIndex = prev.findIndex((container) => (container.idDropper)+"Dropper" === active.id);
-            const overContainerIndex = prev.findIndex((container) => (container.idDropper)+"Dropper" === over.id);
-            if (activeContainerIndex !== -1 && overContainerIndex !== -1) {
-                prev[activeContainerIndex].cards
-                return arrayMove(prev, activeContainerIndex, overContainerIndex);
-            }
+        setItems((prev) => {
+          const activeContainerIndex = prev.findIndex((container) => (container.idDropper)+"Dropper" === active.id);
+          const overContainerIndex = prev.findIndex((container) => (container.idDropper)+"Dropper" === over.id);
+          if (activeContainerIndex !== -1 && overContainerIndex !== -1) {
+              prev[activeContainerIndex].cards
+              return arrayMove(prev, activeContainerIndex, overContainerIndex);
+          }
 
-            const activeCardContainerIndex = prev.findIndex((container) =>
-                container.cards.some((card) => (card.idCard)+"Card" === active.id)
-            );
-            const overCardContainerIndex = prev.findIndex((container) =>
-              (container.idDropper)+"Dropper" === over.id || container.cards.some((card) => (card.idCard)+"Card" === over.id)
-            );
+          const activeCardContainerIndex = prev.findIndex((container) =>
+              container.cards.some((card) => (card.idCard)+"Card" === active.id)
+          );
+          const overCardContainerIndex = prev.findIndex((container) =>
+            (container.idDropper)+"Dropper" === over.id || container.cards.some((card) => (card.idCard)+"Card" === over.id)
+          );
 
-            if (activeCardContainerIndex !== overCardContainerIndex) {
-                const activeContainer = prev[activeCardContainerIndex];
-                const overContainer = prev[overCardContainerIndex];
-                const activeCardIndex = activeContainer.cards.findIndex((card) => (card.idCard)+"Card" === active.id);
-                const overCardIndex = overContainer.cards.findIndex((card) => (card.idCard)+"Card" === over.id);
+          if (activeCardContainerIndex !== overCardContainerIndex) {
+              const activeContainer = prev[activeCardContainerIndex];
+              const overContainer = prev[overCardContainerIndex];
+              const activeCardIndex = activeContainer.cards.findIndex((card) => (card.idCard)+"Card" === active.id);
+              const overCardIndex = overContainer.cards.findIndex((card) => (card.idCard)+"Card" === over.id);
 
-                const newItems = [...prev];
-                const [movedCard] = newItems[activeCardContainerIndex].cards.splice(activeCardIndex, 1); //Delete card of origin Dropper
+              const newItems = [...prev];
+              const [movedCard] = newItems[activeCardContainerIndex].cards.splice(activeCardIndex, 1); //Delete card of origin Dropper
 
-                newItems[overCardContainerIndex].cards.splice(
-                overCardIndex >= 0 ? overCardIndex : newItems[overCardContainerIndex].cards.length,
-                0,
-                { ...movedCard }
-                );
+              newItems[overCardContainerIndex].cards.splice(
+              overCardIndex >= 0 ? overCardIndex : newItems[overCardContainerIndex].cards.length,
+              0,
+              { ...movedCard }
+              );
 
-                return newItems;
-            } else {
-                const containerIndex = activeCardContainerIndex;
-                const oldIndex = prev[containerIndex].cards.findIndex((card) => (card.idCard)+"Card" === active.id);
-                const newIndex = prev[containerIndex].cards.findIndex((card) => (card.idCard)+"Card" === over.id);
+              return newItems;
+          } else {
+              const containerIndex = activeCardContainerIndex;
+              const oldIndex = prev[containerIndex].cards.findIndex((card) => (card.idCard)+"Card" === active.id);
+              const newIndex = prev[containerIndex].cards.findIndex((card) => (card.idCard)+"Card" === over.id);
 
-                return prev.map((container, index) => {
-                if (index === containerIndex) {
-                    return {
-                    ...container,
-                    cards: arrayMove(container.cards, oldIndex, newIndex),
-                    };
-                }
-                return container;
-                });
+              return prev.map((container, index) => {
+              if (index === containerIndex) {
+                  return {
+                  ...container,
+                  cards: arrayMove(container.cards, oldIndex, newIndex),
+                  };
+              }
+              return container;
+              });
             }
           });
-      }
-
-      setActiveId(null);
-      setActiveType(null);
+        }
+        setActiveId(null);
+        setActiveType(null);
       };
 
+    const deleteCards = (idCard: number) => {
+      const updateDeleteCard = [...deleteCard, idCard];
+      setDeleteCard(updateDeleteCard);
+      autoSave();
+    }
+
+    const deleteDroppers = (idDropper: number) => {
+      const updateDeleteDropper = [...deleteDropper, idDropper];
+      setDeleteDropper(updateDeleteDropper);
+      autoSave();
+    }
   return (
     <KanbanContext.Provider value={{
       items,
@@ -203,7 +215,9 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
       handleCardClick,
       handleCloseModal,
       handleDragStart,
-      handleDragEnd
+      handleDragEnd,
+      deleteCards,
+      deleteDroppers,
     }}>
       {children}
     </KanbanContext.Provider>

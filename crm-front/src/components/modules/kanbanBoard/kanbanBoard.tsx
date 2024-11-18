@@ -61,7 +61,7 @@ const KanbanBoard = () => {
         >
           {containerItem.cards.map((card) => (
             <DragBox key={card.idCard} id={card.idCard}>
-              <BoxKanban title={card.titleCard} content={card.contentCard} />
+              <BoxKanban title={card.titleCard} content={card.contentCard} id={card.idCard}/>
             </DragBox>
           ))}
         </Dropper>
@@ -77,7 +77,7 @@ const KanbanBoard = () => {
       }
       const cardItem = item as CardsByDropper;
       console.log("Card", cardItem);
-      return <BoxKanban title={cardItem.titleCard} content={cardItem.contentCard} />;
+      return <BoxKanban title={cardItem.titleCard} content={cardItem.contentCard} id={cardItem.idCard ? cardItem.idCard : 0} />;
     }
   };
 
@@ -96,7 +96,7 @@ const KanbanBoard = () => {
                   {item.cards.map((card) => (
                     <DragBox key={card.idCard} id={card.idCard ? card.idCard : 0}>
                       <div onClick={() => handleCardClick({ idDropper: item.idDropper, titleDropper: item.titleDropper, idCard: card.idCard, titleCard: card.titleCard, contentCard: card.contentCard })}>
-                        <BoxKanban title={card.titleCard} content={card.contentCard} />
+                        <BoxKanban title={card.titleCard} content={card.contentCard} id={card.idCard ? card.idCard : 0}/>
                       </div>
                     </DragBox>
                   ))}
