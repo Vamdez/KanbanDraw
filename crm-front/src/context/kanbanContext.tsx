@@ -1,5 +1,5 @@
 'use client';
-import React, { createContext, useContext, useState, ReactNode, useEffect } from 'react';
+import React, { createContext, useContext, useState, ReactNode, useEffect, useCallback } from 'react';
 import { ItemsByProject, RequestCard, RequestDropper } from '@/@types/fetchProjects';
 import { ModalItem, newDroppersItem, newCardItem } from '@/@types/kanbanBoardTypes';
 import { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
@@ -72,13 +72,14 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
     return { mapDroppers, mapCards };
   };
 
-  const autoSave = async () => {
+  const autoSave = useCallback(async () => {
+    console.log("AUTO SAVE");
     const { mapDroppers, mapCards } = mapItensToRequests(items, 1);
     await updateDroppersbyProject(mapDroppers, mapCards, deleteCard, deleteDropper);
-  };
+  }, [items, deleteCard, deleteDropper]);
 
   useEffect(() => {
-    const intervalId = setInterval(autoSave, 10000);
+    const intervalId = setInterval(autoSave, 5000);
     return () => clearInterval(intervalId);
   }, [autoSave]);
 
@@ -193,16 +194,18 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
         setActiveType(null);
       };
 
-    const deleteCards = (idCard: number) => {
-      const updateDeleteCard = [...deleteCard, idCard];
-      setDeleteCard(updateDeleteCard);
-      autoSave();
+    const deleteCards = async(idCard: number) => {
+      await updateDroppersbyProject(droppers, cards, [idCard], deleteDropper);
+      resetState();
+      const response = await feachDroppersbyProject(1);
+      setItems(response);
     }
 
-    const deleteDroppers = (idDropper: number) => {
-      const updateDeleteDropper = [...deleteDropper, idDropper];
-      setDeleteDropper(updateDeleteDropper);
-      autoSave();
+    const deleteDroppers = async(idDropper: number) => {
+      await updateDroppersbyProject(droppers, cards, deleteCard, [idDropper]);
+      resetState();
+      const response = await feachDroppersbyProject(1);
+      setItems(response);
     }
   return (
     <KanbanContext.Provider value={{

@@ -1,20 +1,16 @@
 'use client';
 
-import React from 'react';
-import { DndContext, DragOverlay } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import DragBox from '@/components/atoms/drageBox/dragBox';
-import Dropper from '@/components/atoms/dropper/dropper';
+import { CardsByDropper, ItemsByProject } from '@/@types/fetchProjects';
 import BoxKanban from '@/components/atoms/Box/boxKanban';
 import ModalBox from '@/components/atoms/ModalBox/modalBox';
 import { AddCardButton } from '@/components/atoms/addCardButton/addCardButton';
 import { AddDropButton } from '@/components/atoms/addDropButton/addDropButton';
-import { useKanban, KanbanContextType } from '@/context/kanbanContext';
+import DragBox from '@/components/atoms/drageBox/dragBox';
+import Dropper from '@/components/atoms/dropper/dropper';
+import { KanbanContextType, useKanban } from '@/context/kanbanContext';
+import { DndContext, DragOverlay, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { styleBoxDropper } from '@utils/templates';
-import { DroppersByProject, CardsByDropper, ItemsByProject } from '@/@types/fetchProjects';
-import { UniqueIdentifier } from '@dnd-kit/core';
-import { PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
-import { useEffect } from 'react';
 
 export interface ModalItem {
 
