@@ -1,6 +1,7 @@
 import React from 'react';
 import { CardsByDropper } from '@/@types/fetchProjects';
 import { ModalItem } from '@/@types/kanbanBoardTypes';
+import TextField from '../textField/textField';
 
 interface PropsModalBox {
     data: ModalItem;
@@ -14,7 +15,8 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
             {data.titleDropper === 'new' && (<div>Ola</div>)}
             <div className="bg-white rounded-lg p-6 w-full max-w-md">
                 <div className="flex justify-between items-center mb-4">
-                    <h3 className="text-xl font-semibold text-gray-800">{data.titleCard}</h3>
+                    <TextField defaultValue={data.titleCard} style={{fontSize: '1.25rem', color: '#1f2937', fontWeight: 600}}/>
+                    {/* <h3 className="text-xl font-semibold text-gray-800">{data.titleCard}</h3> */}
                     <button 
                         className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
                         onClick={handleClose}
