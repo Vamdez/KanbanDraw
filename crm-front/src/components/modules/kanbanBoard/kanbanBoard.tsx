@@ -2,7 +2,7 @@
 
 import { CardsByDropper, ItemsByProject } from '@/@types/fetchProjects';
 import BoxKanban from '@/components/atoms/Box/boxKanban';
-import ModalBox from '@/components/atoms/ModalBox/modalBox';
+import ModalBox from '@/components/modules/modalBox/modalBox';
 import { AddCardButton } from '@/components/atoms/addCardButton/addCardButton';
 import { AddDropButton } from '@/components/atoms/addDropButton/addDropButton';
 import DragBox from '@/components/atoms/drageBox/dragBox';

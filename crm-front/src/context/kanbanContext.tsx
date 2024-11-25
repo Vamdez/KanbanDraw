@@ -7,6 +7,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { feachDroppersbyProject, updateDroppersbyProject } from '@/app/(routes)/home/projects';
 
  export interface KanbanContextType {
+  setItems: React.Dispatch<React.SetStateAction<ItemsByProject[]>>;
   items: ItemsByProject[];
   selectedItem: ModalItem | null;
   activeId: UniqueIdentifier | null;
@@ -209,6 +210,7 @@ export const  KanbanProvider = ({ children, initialDroppers }: KanbanProviderPro
     }
   return (
     <KanbanContext.Provider value={{
+      setItems,
       items,
       selectedItem,
       activeId,
