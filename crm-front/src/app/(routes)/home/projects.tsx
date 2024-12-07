@@ -6,7 +6,7 @@ import {
   GetDroppersResponse,
 } from '@/@types/fetchProjects';
 
-export const feachDroppersbyProject = async (idProject: number) => {
+export const fetchDroppersbyProject = async (idProject: number) => {
   const response = await fetch(`http://localhost:8000/projects/${idProject}`);
   if (!response.ok) {
     throw new Error('Failed to fetch droppers by project');

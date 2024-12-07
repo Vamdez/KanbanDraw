@@ -20,19 +20,18 @@ export const metadata: Metadata = {
     icon: '/logoKanban.png',
   },
 };
-
-export const RootLayout = ({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) => {
-  return (
-    <html lang="en">
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
-        {children}
-      </body>
-    </html>
-  );
+const RootLayout = ({
+	children,
+	}: Readonly<{
+	children: React.ReactNode;
+	}>) => {
+	return (
+	  <html lang="en">
+		<body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
+		  {children}
+		</body>
+	  </html>
+	);
 };
+	
+export default RootLayout;
