@@ -8,7 +8,7 @@ const Home = async () => {
     <KanbanProvider initialDroppers={await feachDroppersbyProject(1)}>
       <KanbanBoard />
     </KanbanProvider>
-  )
+  );
 };
 
 export default Home;

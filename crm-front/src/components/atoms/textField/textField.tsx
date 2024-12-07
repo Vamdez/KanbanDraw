@@ -1,5 +1,3 @@
-import { on } from "events";
-
 interface PropsTextField {
   defaultValue?: string;
   style?: React.CSSProperties;
@@ -7,7 +5,12 @@ interface PropsTextField {
   handleChange?: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-const TextField = ({ defaultValue = "", style, inputProps, handleChange }: PropsTextField) => {
+const TextField = ({
+  defaultValue = '',
+  style,
+  inputProps,
+  handleChange,
+}: PropsTextField) => {
   return (
     <div className="w-full" style={style}>
       <input
