@@ -7,6 +7,7 @@ interface CardsAttributes {
   content: string;
   position: number;
   fk_dropper: number;
+  elements_draw: string;
   created_at: Date;
   updated_at: Date;
 }
@@ -19,6 +20,7 @@ export class Cards extends Model<CardsAttributes, CardsCreationAttributes> {
   public content!: string;
   public position!: number;
   public fk_dropper!: number;
+  public elements_draw!: string;
   public readonly created_at!: Date;
   public readonly updated_at!: Date;
 
@@ -53,6 +55,10 @@ export default (sequelize: Sequelize, DataTypes: any) => {
       fk_dropper: {
         type: DataTypes.INTEGER,
         allowNull: false,
+      },
+      elements_draw: {
+        type: DataTypes.TEXT,
+        allowNull: true,
       },
       created_at: {
         type: DataTypes.DATE,

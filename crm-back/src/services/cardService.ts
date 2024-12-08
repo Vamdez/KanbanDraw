@@ -1,7 +1,6 @@
 import db from '../models';
 import { Card, CardCreate } from '../types/kanbanTypes';
 import { NotFoundError, ConflictError } from '../errors/customErrors';
-import { where } from 'sequelize';
 
 const getCards = async () => {
     return await db.Cards.findAll();
