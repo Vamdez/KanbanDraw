@@ -94,13 +94,13 @@ const KanbanBoard = () => {
   };
 
   return (
-    <div className="bg-white h-screen w-screen overflow-hidden flex items-center select-none">
+    <div className="flex h-screen w-screen select-none items-center overflow-hidden bg-white">
       <DndContext
         onDragStart={handleDragStart}
         onDragEnd={handleDragEnd}
         sensors={sensors}
       >
-        <div className="flex flex-row gap-4 p-4 min-w-full">
+        <div className="flex min-w-full flex-row gap-4 p-4">
           <SortableContext
             items={items.map((item) => item.idDropper)}
             strategy={verticalListSortingStrategy}

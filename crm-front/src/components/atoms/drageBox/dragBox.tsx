@@ -30,7 +30,7 @@ const DragBox: React.FC<PropsDragBox> = ({ id, children }) => {
       style={style}
       {...listeners}
       {...attributes}
-      className="w-full mb-2"
+      className="mb-2 w-full"
     >
       {children}
     </div>

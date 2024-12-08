@@ -11,16 +11,16 @@ const BoxKanban = ({ title, content, id }: PropsBoxKanban) => {
   const { deleteCards }: KanbanContextType = useKanban();
 
   return (
-    <div className="w-full h-40 bg-white shadow-md rounded-md mb-2 cursor-pointer hover:shadow-xl transition-shadow duration-200">
+    <div className="mb-2 h-40 w-full cursor-pointer rounded-md bg-white shadow-md transition-shadow duration-200 hover:shadow-xl">
       <span
         color="black"
-        className="text-xl font-semibold mb-2 text-gray-300 absolute top-2 right-4 z-10"
+        className="absolute right-4 top-2 z-10 mb-2 text-xl font-semibold text-gray-300"
         onClick={() => deleteCards(id)}
       >
         x
       </span>
-      <div className="p-3 border-l-4 h-full border-green-500">
-        <h3 className="text-sm font-semibold text-gray-800 mb-1">{title}</h3>
+      <div className="h-full border-l-4 border-green-500 p-3">
+        <h3 className="mb-1 text-sm font-semibold text-gray-800">{title}</h3>
         <p className="text-xs text-gray-600">{content}</p>
       </div>
     </div>

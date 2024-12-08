@@ -16,7 +16,7 @@ const TextField = ({
       <input
         type="text"
         defaultValue={defaultValue}
-        className="w-full h-10 px-3 py-2 focus:outline-none"
+        className="h-10 w-full px-3 py-2 focus:outline-none"
         onChange={handleChange}
         {...inputProps}
       />

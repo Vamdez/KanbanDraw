@@ -49,25 +49,23 @@ const Dropper: React.FC<PropsDropper> = ({
     >
       {title && (
         <div
-          className={`text-xl font-semibold mb-2 text-gray-600 ${titleClassName}`}
+          className={`mb-2 text-xl font-semibold text-gray-600 ${titleClassName}`}
         >
           {title}
         </div>
       )}
       <div
-        className={`w-[300px] h-[700px] rounded-xl border-2 
-          flex justify-center items-center transition-all duration-200 ease-in-out 
-          ${dropperClassName}`}
+        className={`flex h-[700px] w-[300px] items-center justify-center rounded-xl border-2 transition-all duration-200 ease-in-out ${dropperClassName}`}
         style={dropperStyles}
       >
         <span
           color="black"
-          className="text-xl font-semibold mb-2 text-gray-600 absolute top-2 right-4"
+          className="absolute right-4 top-2 mb-2 text-xl font-semibold text-gray-600"
           onClick={() => deleteDroppers(id)}
         >
           x
         </span>
-        <div className="w-full p-4 flex flex-col items-center justify-center overflow-auto">
+        <div className="flex w-full flex-col items-center justify-center overflow-auto p-4">
           {children}
         </div>
       </div>

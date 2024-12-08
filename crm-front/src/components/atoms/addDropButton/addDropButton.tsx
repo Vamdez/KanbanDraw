@@ -7,7 +7,7 @@ interface PropsAddDropButton {
 export const AddDropButton = ({ handleClick }: PropsAddDropButton) => {
   return (
     <button
-      className="text-white bg-gray-400 hover:bg-gray-500 rounded-full w-10 h-75 mt-10 items-center justify-center flex"
+      className="h-75 mt-10 flex w-10 items-center justify-center rounded-full bg-gray-400 text-white hover:bg-gray-500"
       onClick={handleClick}
     >
       <svg

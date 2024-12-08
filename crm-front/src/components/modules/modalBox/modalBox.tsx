@@ -79,17 +79,17 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
   };
 
   return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       {data.titleDropper === 'new' && <div>Ola</div>}
-      <div className="bg-white rounded-lg p-6 h-[1000px] w-[1000px]">
-        <div className="flex justify-between items-center mb-4">
+      <div className="h-[1000px] w-[1000px] rounded-lg bg-white p-6">
+        <div className="mb-4 flex items-center justify-between">
           <TextField
             defaultValue={data.titleCard}
             style={{ fontSize: '1.25rem', color: '#1f2937', fontWeight: 600 }}
             handleChange={handleChangeTitle}
           />
           <button
-            className="text-gray-600 hover:text-gray-800 transition-colors duration-200"
+            className="text-gray-600 transition-colors duration-200 hover:text-gray-800"
             onClick={handleClose}
             aria-label="Close modal"
           >
@@ -99,7 +99,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
               viewBox="0 0 24 24"
               strokeWidth={1.5}
               stroke="currentColor"
-              className="w-6 h-6"
+              className="h-6 w-6"
             >
               <path
                 strokeLinecap="round"

@@ -7,7 +7,7 @@ interface PropsAddCardButton {
 export const AddCardButton = ({ handleClick }: PropsAddCardButton) => {
   return (
     <button
-      className="text-gray-600 bg-white hover:text-gray-800 rounded-full w-40 justify-center flex"
+      className="flex w-40 justify-center rounded-full bg-white text-gray-600 hover:text-gray-800"
       onClick={handleClick}
     >
       <svg
