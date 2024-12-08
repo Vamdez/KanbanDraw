@@ -7,6 +7,7 @@ export interface Card {
     positionCard: number;
     createdAtCard: Date;
     updatedAtCard: Date;
+    elementsDrawCard: string;
 }
 
 export interface ProjectbyIdResponse {
@@ -34,6 +35,7 @@ export interface CardRequest {
     content: string;
     position: number;
     fk_dropper: number;
+    elements_draw: string;
 }
 
 export interface DropperRequest {

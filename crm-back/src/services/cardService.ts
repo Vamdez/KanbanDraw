@@ -1,5 +1,5 @@
 import db from '../models';
-import { Card, CardCreate } from '../types/kanbanTypes';
+import { Card, CardCreateRequest } from '../types/kanbanTypes';
 import { NotFoundError, ConflictError } from '../errors/customErrors';
 
 const getCards = async () => {
@@ -14,7 +14,7 @@ const getCardsByDropperId = async (id: number) => {
     });
 };
 
-const createCard = async (card: CardCreate) => {
+const createCard = async (card: CardCreateRequest) => {
     const maxPosition = await db.Cards.max('position', { where: { fk_dropper: card.fk_dropper } });
     const newCard: Card = {
         ...card,

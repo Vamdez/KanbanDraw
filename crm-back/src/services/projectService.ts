@@ -1,6 +1,6 @@
 import db from '../models';
-import { Project } from '../types/kanbanTypes';
-import { ProjectbyIdResponse, DroppersbyProject, CardRequest, Card, ProjectUpdateRequest, DropperRequest } from '../types/projectTypes';
+import { ProjectRequest } from '../types/kanbanTypes';
+import { ProjectbyIdResponse, DroppersbyProject, Card, ProjectUpdateRequest} from '../types/projectTypes';
 
 const getProjects = async () => {
     return await db.Project.findAll();
@@ -27,7 +27,7 @@ const updateProjects = async (projectStructure: ProjectUpdateRequest) => {
 
         if (cardsToUpdate.length > 0) {
             await db.Cards.bulkCreate(cardsToUpdate, {
-                updateOnDuplicate: ['title', 'content', 'position', 'fk_dropper'],
+                updateOnDuplicate: ['title', 'content', 'position', 'fk_dropper', 'elements_draw'],
             }, { transaction: t });
         }
 
@@ -75,6 +75,7 @@ const getProjectbyId = async (id: number): Promise<DroppersbyProject[]> => {
                     ['title', 'titleCard'],
                     ['content', 'contentCard'],
                     ['position', 'positionCard'],
+                    ['elements_draw', 'elementsDrawCard'],
                     ['created_at', 'createdAtCard'],
                     ['updated_at', 'updatedAtCard']
                 ],
@@ -97,12 +98,13 @@ const getProjectbyId = async (id: number): Promise<DroppersbyProject[]> => {
             contentCard: card.dataValues.contentCard,
             positionCard: card.dataValues.positionCard,
             createdAtCard: card.dataValues.createdAtCard,
-            updatedAtCard: card.dataValues.updatedAtCard
+            updatedAtCard: card.dataValues.updatedAtCard,
+            elementsDrawCard: card.dataValues.elementsDrawCard
         }))
     }));
 };
 
-const createProject = async (project: Project) => {
+const createProject = async (project: ProjectRequest) => {
     return await db.Project.create(project);
 };
 

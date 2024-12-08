@@ -3,12 +3,14 @@ export interface Card {
     content: string;
     position: number;
     fk_dropper: number;
+    elements_draw: string;
 }
 
-export interface CardCreate {
+export interface CardCreateRequest {
     title: string;
     content: string;
     fk_dropper: number;
+    elements_draw: string;
 }
 
 export interface Dropper {
@@ -17,6 +19,6 @@ export interface Dropper {
     fk_project: number;
 }
 
-export interface Project {
+export interface ProjectRequest {
     name: string;
 }
