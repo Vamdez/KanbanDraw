@@ -25,6 +25,7 @@ export interface DroppersbyProject{
     titleCard: string;
     contentCard: string;
     positionCard: number;
+    elementsDrawCard: string;
     createdAtCard: Date;
     updatedAtCard: Date;
 }
