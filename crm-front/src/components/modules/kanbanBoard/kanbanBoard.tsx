@@ -129,6 +129,7 @@ const KanbanBoard = () => {
                             idCard: card.idCard,
                             titleCard: card.titleCard,
                             contentCard: card.contentCard,
+                            elementsDrawCard: card.elementsDrawCard,
                           })
                         }
                       >

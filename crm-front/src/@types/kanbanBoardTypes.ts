@@ -35,4 +35,5 @@ export interface ModalItem {
   idCard: number;
   titleCard: string;
   contentCard: string;
+  elementsDrawCard: string;
 }

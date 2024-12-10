@@ -3,7 +3,7 @@ import { ModalItem } from '@/@types/kanbanBoardTypes';
 import TextField from '../../atoms/textField/textField';
 import { KanbanContextType, useKanban } from '@/context/kanbanContext';
 import dynamic from 'next/dynamic';
-import { ExcalidrawInitialDataState } from '@excalidraw/excalidraw/types/types';
+// import { ExcalidrawInitialDataState } from '@excalidraw/excalidraw/types/types';
 const Excalidraw = dynamic(
   async () => (await import('@excalidraw/excalidraw')).Excalidraw,
   {
@@ -11,40 +11,41 @@ const Excalidraw = dynamic(
   },
 );
 import { useDebounce } from '@hooks/UseDebounce';
+import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 
-const Initial: ExcalidrawInitialDataState = {
-  elements: [
-    {
-      id: 'tKJz8VuPWEQfx00b8gsDg',
-      type: 'ellipse',
-      x: 224,
-      y: 321.5,
-      width: 456,
-      height: 297,
-      angle: 0,
-      strokeColor: '#1971c2',
-      backgroundColor: 'transparent',
-      fillStyle: 'solid',
-      strokeWidth: 2,
-      strokeStyle: 'solid',
-      roughness: 1,
-      opacity: 100,
-      groupIds: [],
-      frameId: null,
-      roundness: {
-        type: 2,
-      },
-      seed: 1249415890,
-      version: 16,
-      versionNonce: 964796690,
-      isDeleted: false,
-      boundElements: null,
-      updated: 1733522451544,
-      link: null,
-      locked: false,
-    },
-  ],
-};
+// const Initial: ExcalidrawInitialDataState = {
+//   elements: [
+//     {
+//       id: 'tKJz8VuPWEQfx00b8gsDg',
+//       type: 'ellipse',
+//       x: 224,
+//       y: 321.5,
+//       width: 456,
+//       height: 297,
+//       angle: 0,
+//       strokeColor: '#1971c2',
+//       backgroundColor: 'transparent',
+//       fillStyle: 'solid',
+//       strokeWidth: 2,
+//       strokeStyle: 'solid',
+//       roughness: 1,
+//       opacity: 100,
+//       groupIds: [],
+//       frameId: null,
+//       roundness: {
+//         type: 2,
+//       },
+//       seed: 1249415890,
+//       version: 16,
+//       versionNonce: 964796690,
+//       isDeleted: false,
+//       boundElements: null,
+//       updated: 1733522451544,
+//       link: null,
+//       locked: false,
+//     },
+//   ],
+// };
 
 interface PropsModalBox {
   data: ModalItem;
@@ -72,10 +73,22 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
     );
   };
 
-  const handleChangeExcalidraw = (elements: any, appState: any, files: any) => {
-    console.log('Elements', elements);
-    console.log('AppState', appState);
-    console.log('Files', files);
+  const handleChangeExcalidraw = (elements: ExcalidrawElement[]) => {
+    setItems((prevItems) =>
+      prevItems.map((dropper) => {
+        if (dropper.idDropper === data.idDropper) {
+          return {
+            ...dropper,
+            cards: dropper.cards.map((card) =>
+              card.idCard === data.idCard
+                ? { ...card, elementsDrawCard: elements.toString() }
+                : card,
+            ),
+          };
+        }
+        return dropper;
+      }),
+    );
   };
 
   return (
@@ -116,7 +129,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
         </div>
         <Excalidraw
           onChange={useDebounce(handleChangeExcalidraw, 1000)}
-          initialData={Initial}
+          initialData={JSON.parse(data.elementsDrawCard)}
         />
       </div>
     </div>

@@ -4,6 +4,7 @@ export interface RequestCard {
   title: string;
   content: string;
   position: number;
+  elements_draw?: string;
 }
 
 export interface RequestDropper {
@@ -18,6 +19,7 @@ export interface CardsByDropper {
   titleCard: string;
   contentCard: string;
   positionCard: number;
+  elementsDrawCard: string;
 }
 
 export interface DroppersByProject {
@@ -34,28 +36,22 @@ export interface ProjectUpdateRequest {
   droppersIdDelete: number[];
 }
 
-export interface CardsByItems {
-  titleCard: string;
-  idCard: number;
-  contentCard: string;
-}
-
 export interface ItemsByProject {
   idDropper: number;
   titleDropper: string;
-  cards: CardsByItems[];
+  cards: GetCardsResponse[];
 }
 
 export interface GetCardsResponse {
   idCard: number;
   titleCard: string;
   contentCard: string;
-  positionCard: number;
+  elementsDrawCard: string;
 }
 
 export interface GetDroppersResponse {
   idDropper: number;
   titleDropper: string;
   positionDropper: number;
-  cards: CardsByItems[];
+  cards: GetCardsResponse[];
 }

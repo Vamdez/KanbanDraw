@@ -4,6 +4,7 @@ import {
   RequestCard,
   RequestDropper,
   GetDroppersResponse,
+  GetCardsResponse,
 } from '@/@types/fetchProjects';
 
 export const fetchDroppersbyProject = async (idProject: number) => {
@@ -16,13 +17,13 @@ export const fetchDroppersbyProject = async (idProject: number) => {
   const data: ItemsByProject[] = rawData.map((item) => ({
     idDropper: item.idDropper,
     titleDropper: item.titleDropper,
-    cards: item.cards.map((card: any) => ({
+    cards: item.cards.map((card: GetCardsResponse) => ({
       titleCard: card.titleCard,
       idCard: card.idCard,
       contentCard: card.contentCard,
+      elementsDrawCard: card.elementsDrawCard,
     })),
   }));
-
   return data;
 };
 

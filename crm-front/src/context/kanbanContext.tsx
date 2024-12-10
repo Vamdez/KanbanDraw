@@ -20,7 +20,7 @@ import {
 import { DragEndEvent, DragStartEvent, UniqueIdentifier } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 import {
-  feachDroppersbyProject,
+  fetchDroppersbyProject,
   updateDroppersbyProject,
 } from '@/app/(routes)/home/projects';
 import { useDebounce } from '@/hooks/UseDebounce';
@@ -66,7 +66,7 @@ export const KanbanProvider = ({
   useEffect(() => {
     const fetchInitialData = async () => {
       try {
-        const response = await feachDroppersbyProject(1);
+        const response = await fetchDroppersbyProject(1);
         setItems(response);
       } catch (error) {
         console.error('Error fetching initial data:', error);
@@ -91,6 +91,7 @@ export const KanbanProvider = ({
         title: card.titleCard,
         content: card.contentCard,
         position: cardPosition,
+        elements_draw: card.elementsDrawCard,
       })),
     );
 
@@ -139,7 +140,7 @@ export const KanbanProvider = ({
       deleteDropper,
     );
     resetState();
-    const response = await feachDroppersbyProject(1);
+    const response = await fetchDroppersbyProject(1);
     setItems(response);
   };
 
@@ -161,7 +162,7 @@ export const KanbanProvider = ({
       deleteDropper,
     );
     resetState();
-    const response = await feachDroppersbyProject(1);
+    const response = await fetchDroppersbyProject(1);
     setItems(response);
   };
 
@@ -257,14 +258,14 @@ export const KanbanProvider = ({
   const deleteCards = async (idCard: number) => {
     await updateDroppersbyProject(droppers, cards, [idCard], deleteDropper);
     resetState();
-    const response = await feachDroppersbyProject(1);
+    const response = await fetchDroppersbyProject(1);
     setItems(response);
   };
 
   const deleteDroppers = async (idDropper: number) => {
     await updateDroppersbyProject(droppers, cards, deleteCard, [idDropper]);
     resetState();
-    const response = await feachDroppersbyProject(1);
+    const response = await fetchDroppersbyProject(1);
     setItems(response);
   };
   return (
