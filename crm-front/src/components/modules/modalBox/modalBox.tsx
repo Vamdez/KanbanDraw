@@ -94,7 +94,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
       {data.titleDropper === 'new' && <div>Ola</div>}
-      <div className="h-[1000px] w-[1000px] rounded-lg bg-white p-6">
+      <div className="h-[70%] w-[70%] rounded-lg bg-white p-6">
         <div className="mb-4 flex items-center justify-between">
           <TextField
             defaultValue={data.titleCard}
@@ -129,7 +129,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
         </div>
         <Excalidraw
           onChange={useDebounce(handleChangeExcalidraw, 1000)}
-          initialData={JSON.parse(data.elementsDrawCard)}
+          initialData={data.elementsDrawCard ? JSON.parse(data.elementsDrawCard) : []}
         />
       </div>
     </div>

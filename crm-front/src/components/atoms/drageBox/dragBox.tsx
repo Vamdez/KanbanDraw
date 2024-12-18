@@ -7,7 +7,7 @@ interface PropsDragBox {
   children: React.ReactNode;
 }
 
-const DragBox: React.FC<PropsDragBox> = ({ id, children }) => {
+const DragBox = ({ id, children }: PropsDragBox) => {
   const { attributes, listeners, setNodeRef, transform, isDragging } =
     useSortable({
       id: id + 'Card',

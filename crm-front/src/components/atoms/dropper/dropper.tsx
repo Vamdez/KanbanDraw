@@ -13,7 +13,7 @@ interface PropsDropper {
   isDragging?: boolean;
 }
 
-const Dropper: React.FC<PropsDropper> = ({
+const Dropper = ({
   id,
   children,
   style,
@@ -21,7 +21,7 @@ const Dropper: React.FC<PropsDropper> = ({
   titleClassName,
   dropperClassName,
   isDragging,
-}) => {
+}: PropsDropper) => {
   const { deleteDroppers }: KanbanContextType = useKanban();
 
   const { attributes, listeners, setNodeRef, transform } = useSortable({
@@ -42,7 +42,7 @@ const Dropper: React.FC<PropsDropper> = ({
 
   return (
     <div
-      className="flex flex-col items-center justify-center"
+      className="flex flex-col items-center justify-center h-full"
       ref={setNodeRef}
       {...attributes}
       {...listeners}
@@ -55,7 +55,7 @@ const Dropper: React.FC<PropsDropper> = ({
         </div>
       )}
       <div
-        className={`flex h-[700px] w-[300px] items-center justify-center rounded-xl border-2 transition-all duration-200 ease-in-out ${dropperClassName}`}
+        className={`flex h-full w-[300px] items-center justify-center rounded-xl border-2 transition-all duration-200 ease-in-out ${dropperClassName}`}
         style={dropperStyles}
       >
         <span
