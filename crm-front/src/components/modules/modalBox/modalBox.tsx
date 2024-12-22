@@ -56,6 +56,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
     );
   },[data.idCard, data.idDropper, setItems]);
 
+
   const debouncedHandleChange = useDebounce(handleChangeExcalidraw, 1000);
 
   return (
@@ -96,7 +97,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
         </div>
         <Excalidraw
           onChange={debouncedHandleChange}
-          initialData={data.elementsDrawCard ? JSON.parse(data.elementsDrawCard) : []}
+          initialData={data.elementsDrawCard ? {elements:JSON.parse(data.elementsDrawCard)} : null}
         />
       </div>
     </div>
