@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import kanban from '../db';
 import cardService from '../services/cardService';
 import { NotFoundError, ConflictError } from '../errors/customErrors';
 
