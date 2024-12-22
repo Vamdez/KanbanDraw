@@ -3,11 +3,14 @@
 import { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
-export const RootPage = () => {
+const RootPage = () => {
   const router = useRouter();
+  console.log("Alo");
   useEffect(() => {
     router.push('/home');
   }, [router]);
 
   return null;
 };
+
+export default RootPage;
