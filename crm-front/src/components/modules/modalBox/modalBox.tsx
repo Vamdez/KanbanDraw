@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import { ModalItem } from '@/@types/kanbanBoardTypes';
 import TextField from '../../atoms/textField/textField';
 import { KanbanContextType, useKanban } from '@/context/kanbanContext';
@@ -13,40 +13,6 @@ const Excalidraw = dynamic(
 import { useDebounce } from '@hooks/UseDebounce';
 import { ExcalidrawElement } from '@excalidraw/excalidraw/types/element/types';
 
-// const Initial: ExcalidrawInitialDataState = {
-//   elements: [
-//     {
-//       id: 'tKJz8VuPWEQfx00b8gsDg',
-//       type: 'ellipse',
-//       x: 224,
-//       y: 321.5,
-//       width: 456,
-//       height: 297,
-//       angle: 0,
-//       strokeColor: '#1971c2',
-//       backgroundColor: 'transparent',
-//       fillStyle: 'solid',
-//       strokeWidth: 2,
-//       strokeStyle: 'solid',
-//       roughness: 1,
-//       opacity: 100,
-//       groupIds: [],
-//       frameId: null,
-//       roundness: {
-//         type: 2,
-//       },
-//       seed: 1249415890,
-//       version: 16,
-//       versionNonce: 964796690,
-//       isDeleted: false,
-//       boundElements: null,
-//       updated: 1733522451544,
-//       link: null,
-//       locked: false,
-//     },
-//   ],
-// };
-
 interface PropsModalBox {
   data: ModalItem;
   handleClose: () => void;
@@ -54,7 +20,6 @@ interface PropsModalBox {
 
 const ModalBox = ({ data, handleClose }: PropsModalBox) => {
   const { setItems }: KanbanContextType = useKanban();
-
   const handleChangeTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
     setItems((prevItems) =>
       prevItems.map((dropper) => {
@@ -73,7 +38,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
     );
   };
 
-  const handleChangeExcalidraw = (elements: ExcalidrawElement[]) => {
+  const handleChangeExcalidraw = useCallback((elements: ExcalidrawElement[]) => {
     setItems((prevItems) =>
       prevItems.map((dropper) => {
         if (dropper.idDropper === data.idDropper) {
@@ -81,7 +46,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
             ...dropper,
             cards: dropper.cards.map((card) =>
               card.idCard === data.idCard
-                ? { ...card, elementsDrawCard: elements.toString() }
+                ? { ...card, elementsDrawCard: JSON.stringify(elements) }
                 : card,
             ),
           };
@@ -89,7 +54,9 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
         return dropper;
       }),
     );
-  };
+  },[data.idCard, data.idDropper, setItems]);
+
+  const debouncedHandleChange = useDebounce(handleChangeExcalidraw, 1000);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
@@ -128,7 +95,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
           </p>
         </div>
         <Excalidraw
-          onChange={useDebounce(handleChangeExcalidraw, 1000)}
+          onChange={debouncedHandleChange}
           initialData={data.elementsDrawCard ? JSON.parse(data.elementsDrawCard) : []}
         />
       </div>

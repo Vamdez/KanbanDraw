@@ -114,7 +114,7 @@ export const KanbanProvider = ({
   useEffect(() => {
     debouncedAutoSave();
   }, [items, debouncedAutoSave]);
-
+ 
   const resetState = () => {
     setCards([]);
     setDroppers([]);

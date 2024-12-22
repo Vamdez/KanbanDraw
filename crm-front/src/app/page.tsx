@@ -5,7 +5,6 @@ import { useRouter } from 'next/navigation';
 
 const RootPage = () => {
   const router = useRouter();
-  console.log("Alo");
   useEffect(() => {
     router.push('/home');
   }, [router]);
