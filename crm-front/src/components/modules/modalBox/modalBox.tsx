@@ -37,25 +37,27 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
       }),
     );
   };
-
-  const handleChangeExcalidraw = useCallback((elements: ExcalidrawElement[]) => {
-    setItems((prevItems) =>
-      prevItems.map((dropper) => {
-        if (dropper.idDropper === data.idDropper) {
-          return {
-            ...dropper,
-            cards: dropper.cards.map((card) =>
-              card.idCard === data.idCard
-                ? { ...card, elementsDrawCard: JSON.stringify(elements) }
-                : card,
-            ),
-          };
-        }
-        return dropper;
-      }),
-    );
-  },[data.idCard, data.idDropper, setItems]);
-
+  
+  const handleChangeExcalidraw = useCallback(
+    (elements: ExcalidrawElement[]) => {
+      setItems((prevItems) =>
+        prevItems.map((dropper) => {
+          if (dropper.idDropper === data.idDropper) {
+            return {
+              ...dropper,
+              cards: dropper.cards.map((card) =>
+                card.idCard === data.idCard
+                  ? { ...card, elementsDrawCard: JSON.stringify(elements) }
+                  : card,
+              ),
+            };
+          }
+          return dropper;
+        }),
+      );
+    },
+    [data.idCard, data.idDropper, setItems],
+  );
 
   const debouncedHandleChange = useDebounce(handleChangeExcalidraw, 1000);
 
@@ -66,7 +68,7 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
         <div className="mb-4 flex items-center justify-between">
           <TextField
             defaultValue={data.titleCard}
-            style={{ fontSize: '1.25rem', color: '#1f2937', fontWeight: 600 }}
+            style={'text-xl text-gray-800 font-semibold'}
             handleChange={handleChangeTitle}
           />
           <button
@@ -97,7 +99,11 @@ const ModalBox = ({ data, handleClose }: PropsModalBox) => {
         </div>
         <Excalidraw
           onChange={debouncedHandleChange}
-          initialData={data.elementsDrawCard ? {elements:JSON.parse(data.elementsDrawCard)} : null}
+          initialData={
+            data.elementsDrawCard
+              ? { elements: JSON.parse(data.elementsDrawCard) }
+              : null
+          }
         />
       </div>
     </div>

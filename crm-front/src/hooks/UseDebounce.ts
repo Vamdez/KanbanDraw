@@ -22,7 +22,8 @@ export const useDebounce = (func: SomeFunction, delay: number) => {
         func(...args);
       }, delay);
     },
-    [func, delay] 
+    [func, delay],
   );
+
   return debouncedFunc;
 };
